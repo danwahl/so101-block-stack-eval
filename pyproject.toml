@@ -1,0 +1,55 @@
+[project]
+name = "inspect-robots-so101-block-stack"
+version = "0.1.0"
+description = "The SO-101 block stack in ManiSkill, as an Inspect Robots embodiment and task."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = [
+    "inspect-robots>=0.58",
+    "inspect-robots-agent>=0.28",
+    "mani-skill==3.0.1",
+    "sapien==3.0.3",
+    "torch",
+    "numpy>=2.0,<2.3",
+    "gymnasium>=1.0,<2",
+]
+
+[tool.uv.sources]
+# The agent plugin's custom tools (`LLMAgentPolicy(tools=...)`) are unreleased, so it comes
+# from a commit on a fork, kept there as branch pin/custom-tools-v2 so a rebase cannot lose
+# it. That commit also supplies inspect-robots itself: the plugin names core as a workspace
+# source, so both track the fork's pre-release main.
+inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", rev = "38d168267f0473f42056d67b211d64c5ccdba126" }
+
+# Installed so Inspect Robots finds these by name without importing them first.
+[project.entry-points."inspect_robots.embodiments"]
+so101_sim = "so101_block_stack.embodiment:SimEmbodiment"
+
+[project.entry-points."inspect_robots.tasks"]
+so101-block-stack = "so101_block_stack.task:stack"
+
+[dependency-groups]
+dev = [
+    "httpx",
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/so101_block_stack"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "RUF"]
