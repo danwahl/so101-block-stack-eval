@@ -562,7 +562,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "inspect-robots-so101-block-stack"
+name = "so101-block-stack-eval"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

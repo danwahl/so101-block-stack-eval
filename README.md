@@ -1,10 +1,10 @@
-# inspect-robots-so101-block-stack
+# so101-block-stack-eval
 
 The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/robocurve/inspect-robots) embodiment and task. An SO-101 arm stands at a table with three 30 mm cubes, red, green and blue, and is asked to stack one named block on another. A wrist camera and an overhead camera see the table.
 
 ## Task
 
-`so101-block-stack` holds 150 layouts, one scene each, in `src/so101_block_stack/layouts.jsonl`. Each layout gives:
+`so101-block-stack` holds 150 layouts, one scene each, in `src/so101_block_stack_eval/layouts.jsonl`. Each layout gives:
 - the three blocks' positions and yaws;
 - which block goes on which, and the instruction naming them;
 - the arm's opening joint positions.
@@ -36,7 +36,7 @@ CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json \
 
 The agent plugin's custom tools are not released yet, so `inspect-robots-agent` and `inspect-robots` come from a commit on [a fork](https://github.com/danwahl/inspect-robots).
 
-The arm's description in `src/so101_block_stack/description/` is adapted from the SO-101 in [TheRobotStudio's SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), under the Apache 2.0 license.
+The arm's description in `src/so101_block_stack_eval/description/` is adapted from the SO-101 in [TheRobotStudio's SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), under the Apache 2.0 license.
 
 ## Tests
 

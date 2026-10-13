@@ -23,8 +23,8 @@ import argparse
 from inspect_robots import eval as ir_eval
 from inspect_robots_agent import LLMAgentPolicy
 
-from so101_block_stack.embodiment import LOCATE_POINTS, SimEmbodiment
-from so101_block_stack.task import stack
+from so101_block_stack_eval.embodiment import LOCATE_POINTS, SimEmbodiment
+from so101_block_stack_eval.task import stack
 
 
 def main():

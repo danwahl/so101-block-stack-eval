@@ -9,7 +9,7 @@ from inspect_robots.logging.sink import NullSink
 from inspect_robots.types import Action
 from inspect_robots_agent import LLMAgentPolicy, ToolError
 
-from so101_block_stack.embodiment import (
+from so101_block_stack_eval.embodiment import (
     HIGH,
     LABELS,
     MAX_STEP,
@@ -21,8 +21,8 @@ from so101_block_stack.embodiment import (
     read_pose,
     solve,
 )
-from so101_block_stack.spec import HOME_QPOS, LIMITS
-from so101_block_stack.task import stack
+from so101_block_stack_eval.spec import HOME_QPOS, LIMITS
+from so101_block_stack_eval.task import stack
 
 # A pose over the middle of the spawn box, tool straight down, jaws open.
 POSE = np.array([0.20, 0.0, 0.06, np.pi / 2, np.pi / 2, 1.0])
