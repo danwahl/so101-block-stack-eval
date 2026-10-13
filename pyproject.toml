@@ -21,7 +21,7 @@ dependencies = [
 # from a commit on a fork, kept there as branch pin/custom-tools-v2 so a rebase cannot lose
 # it. That commit also supplies inspect-robots itself: the plugin names core as a workspace
 # source, so both track the fork's pre-release main.
-inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", rev = "38d168267f0473f42056d67b211d64c5ccdba126" }
+inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", rev = "f015b02a72a7f22501abb5b5bdd8c034ce222cd8" }
 
 # Installed so Inspect Robots finds these by name without importing them first.
 [project.entry-points."inspect_robots.embodiments"]

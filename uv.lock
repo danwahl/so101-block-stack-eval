@@ -544,8 +544,8 @@ wheels = [
 
 [[package]]
 name = "inspect-robots"
-version = "0.60.1.dev52+g38d168267"
-source = { git = "https://github.com/danwahl/inspect-robots?rev=38d168267f0473f42056d67b211d64c5ccdba126#38d168267f0473f42056d67b211d64c5ccdba126" }
+version = "0.60.1.dev52+gf015b02a7"
+source = { git = "https://github.com/danwahl/inspect-robots?rev=f015b02a72a7f22501abb5b5bdd8c034ce222cd8#f015b02a72a7f22501abb5b5bdd8c034ce222cd8" }
 dependencies = [
     { name = "numpy" },
 ]
@@ -553,51 +553,12 @@ dependencies = [
 [[package]]
 name = "inspect-robots-agent"
 version = "0.29.0"
-source = { git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&rev=38d168267f0473f42056d67b211d64c5ccdba126#38d168267f0473f42056d67b211d64c5ccdba126" }
+source = { git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&rev=f015b02a72a7f22501abb5b5bdd8c034ce222cd8#f015b02a72a7f22501abb5b5bdd8c034ce222cd8" }
 dependencies = [
     { name = "httpx" },
     { name = "inspect-robots" },
     { name = "numpy" },
     { name = "websockets" },
-]
-
-[[package]]
-name = "so101-block-stack-eval"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "gymnasium" },
-    { name = "inspect-robots" },
-    { name = "inspect-robots-agent" },
-    { name = "mani-skill" },
-    { name = "numpy" },
-    { name = "sapien" },
-    { name = "torch" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "httpx" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "gymnasium", specifier = ">=1.0,<2" },
-    { name = "inspect-robots", specifier = ">=0.58" },
-    { name = "inspect-robots-agent", git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&rev=38d168267f0473f42056d67b211d64c5ccdba126" },
-    { name = "mani-skill", specifier = "==3.0.1" },
-    { name = "numpy", specifier = ">=2.0,<2.3" },
-    { name = "sapien", specifier = "==3.0.3" },
-    { name = "torch" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "httpx" },
-    { name = "pytest", specifier = ">=8" },
-    { name = "ruff", specifier = ">=0.6" },
 ]
 
 [[package]]
@@ -1344,6 +1305,45 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/1f/ea/49c993d6dfdd7338c9b1000a0f36817ed7ec84577ae2e52f890d1a4ff909/smmap-5.0.3.tar.gz", hash = "sha256:4d9debb8b99007ae47165abc08670bd74cb74b5227dda7f643eccc4e9eb5642c", size = 22506, upload-time = "2026-03-09T03:43:26.1Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/d4/59e74daffcb57a07668852eeeb6035af9f32cbfd7a1d2511f17d2fe6a738/smmap-5.0.3-py3-none-any.whl", hash = "sha256:c106e05d5a61449cf6ba9a1e650227ecfb141590d2a98412103ff35d89fc7b2f", size = 24390, upload-time = "2026-03-09T03:43:24.361Z" },
+]
+
+[[package]]
+name = "so101-block-stack-eval"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "gymnasium" },
+    { name = "inspect-robots" },
+    { name = "inspect-robots-agent" },
+    { name = "mani-skill" },
+    { name = "numpy" },
+    { name = "sapien" },
+    { name = "torch" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "httpx" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "gymnasium", specifier = ">=1.0,<2" },
+    { name = "inspect-robots", specifier = ">=0.58" },
+    { name = "inspect-robots-agent", git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&rev=f015b02a72a7f22501abb5b5bdd8c034ce222cd8" },
+    { name = "mani-skill", specifier = "==3.0.1" },
+    { name = "numpy", specifier = ">=2.0,<2.3" },
+    { name = "sapien", specifier = "==3.0.3" },
+    { name = "torch" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "httpx" },
+    { name = "pytest", specifier = ">=8" },
+    { name = "ruff", specifier = ">=0.6" },
 ]
 
 [[package]]
