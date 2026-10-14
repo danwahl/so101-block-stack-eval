@@ -41,6 +41,8 @@ CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json \
 
 ## Results
 
+- `scripts/retry.py` reruns the scenes that errored in a run, as Inspect AI's `eval_retry` does, and writes a complete log that keeps the rest.
+- `scripts/rescore.py` rewrites `lifted` in logs scored under an earlier rule, by replaying each trial's actions.
 - `scripts/analysis.py` builds the leaderboard from each model's latest 50-layout run, with 95% bootstrap intervals over layouts. It writes `results.json` and the table above. It stops if the runs were sent different system prompts or tool schemas, and the table names the hash they share as the prompt version.
 - `scripts/export.py` gathers the counted runs into `dataset/` for the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval): a table of trials, and each run's log with its actions, transcripts and wire calls.
 - `scripts/render.py` animates a trial as a WebP by replaying its logged actions through the sim.

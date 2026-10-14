@@ -32,6 +32,18 @@ from so101_block_stack_eval.task import stack
 OPENROUTER = "https://openrouter.ai/api/v1"
 
 
+def agent(model, embodiment, *, max_llm_calls=100, effort="low", locate=True):
+    """The LLM agent, its moves checked against ``embodiment``'s reach."""
+    return LLMAgentPolicy(
+        model=model,
+        base_url=OPENROUTER,
+        max_llm_calls=max_llm_calls,
+        pre_check=embodiment.pre_check,
+        tools=(LOCATE_POINTS,) if locate else (),
+        effort=effort,
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("model", help="provider/model, as the agent plugin names it")
@@ -49,13 +61,12 @@ def main():
     try:
         (log,) = ir_eval(
             stack(episodes=args.episodes, max_steps=args.max_steps),
-            LLMAgentPolicy(
-                model=args.model,
-                base_url=OPENROUTER,
+            agent(
+                args.model,
+                embodiment,
                 max_llm_calls=args.max_llm_calls,
-                pre_check=embodiment.pre_check,
-                tools=() if args.no_locate else (LOCATE_POINTS,),
                 effort=args.effort,
+                locate=not args.no_locate,
             ),
             embodiment,
             log_dir=args.log_dir or f"outputs/{args.model}",
