@@ -18,10 +18,10 @@ dependencies = [
 
 [tool.uv.sources]
 # The agent plugin's custom tools (`LLMAgentPolicy(tools=...)`) are unreleased, so it comes
-# from a commit on a fork, kept there as branch pin/custom-tools-v2 so a rebase cannot lose
-# it. That commit also supplies inspect-robots itself: the plugin names core as a workspace
-# source, so both track the fork's pre-release main.
-inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", rev = "f015b02a72a7f22501abb5b5bdd8c034ce222cd8" }
+# from the fork's agent-custom-tools branch, which only gains commits; uv.lock records the
+# commit. That branch also supplies inspect-robots itself: the plugin names core as a
+# workspace source, so both track the fork's pre-release main.
+inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", branch = "agent-custom-tools" }
 
 # Installed so Inspect Robots finds these by name without importing them first.
 [project.entry-points."inspect_robots.embodiments"]

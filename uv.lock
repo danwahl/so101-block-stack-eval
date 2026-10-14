@@ -544,8 +544,8 @@ wheels = [
 
 [[package]]
 name = "inspect-robots"
-version = "0.60.1.dev52+gf015b02a7"
-source = { git = "https://github.com/danwahl/inspect-robots?rev=f015b02a72a7f22501abb5b5bdd8c034ce222cd8#f015b02a72a7f22501abb5b5bdd8c034ce222cd8" }
+version = "0.60.1.dev53+g36cadbe71"
+source = { git = "https://github.com/danwahl/inspect-robots?branch=agent-custom-tools#36cadbe719d01e50eaaee901c825662a17a6f916" }
 dependencies = [
     { name = "numpy" },
 ]
@@ -553,7 +553,7 @@ dependencies = [
 [[package]]
 name = "inspect-robots-agent"
 version = "0.29.0"
-source = { git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&rev=f015b02a72a7f22501abb5b5bdd8c034ce222cd8#f015b02a72a7f22501abb5b5bdd8c034ce222cd8" }
+source = { git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&branch=agent-custom-tools#36cadbe719d01e50eaaee901c825662a17a6f916" }
 dependencies = [
     { name = "httpx" },
     { name = "inspect-robots" },
@@ -1332,7 +1332,7 @@ dev = [
 requires-dist = [
     { name = "gymnasium", specifier = ">=1.0,<2" },
     { name = "inspect-robots", specifier = ">=0.58" },
-    { name = "inspect-robots-agent", git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&rev=f015b02a72a7f22501abb5b5bdd8c034ce222cd8" },
+    { name = "inspect-robots-agent", git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&branch=agent-custom-tools" },
     { name = "mani-skill", specifier = "==3.0.1" },
     { name = "numpy", specifier = ">=2.0,<2.3" },
     { name = "sapien", specifier = "==3.0.3" },
