@@ -14,7 +14,7 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 - which block goes on which, and the instruction naming them;
 - the arm's opening joint positions.
 
-A trial succeeds on the first step the named block sits on its target, out of the jaws, with neither of the other blocks moved more than 15 mm. A second scorer, `lifted`, records whether the named block was ever lifted 5 cm off the table. Trials run to 600 steps at 10 Hz unless `max_steps` says otherwise.
+A trial succeeds on the first step the named block sits on its target, out of the jaws, with neither of the other blocks moved more than 15 mm. A second scorer, `lifted`, records whether the jaws ever held the named block off the table. Trials run to 600 steps at 10 Hz unless `max_steps` says otherwise.
 
 ## Embodiment
 

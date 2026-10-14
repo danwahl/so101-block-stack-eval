@@ -30,7 +30,7 @@ def stack(layouts: str | None = None, episodes: int | None = None, max_steps: in
 
     Each scene carries its block spawns, its colour pair and the arm's start, which the
     embodiment places. A trial succeeds the first step the stack holds, and ``lifted`` says
-    whether the named block ever left the table.
+    whether the jaws ever held the named block off the table.
     """
     path = Path(layouts) if layouts else LAYOUTS
     with path.open() as file:

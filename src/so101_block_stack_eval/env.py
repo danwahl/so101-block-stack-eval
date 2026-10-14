@@ -47,10 +47,11 @@ SPAWN_SEPARATION = 0.07
 # The block is 4-fold symmetric top-down, so a quarter turn spans every distinct pose.
 SPAWN_YAW = np.pi / 2
 
-# Success gates. A lift clears the table; a stack is seated within a block half-width,
-# one block-height up, out of the jaws, with neither of the other two blocks shoved out of
-# place.
-LIFT_DZ = 0.05
+# Success gates. A lift is the block held in the jaws and clear of the table, its centre
+# higher than a cube tipped onto an edge (6 mm) can raise it; a stack is seated within a
+# block half-width, one block-height up, out of the jaws, with neither of the other two
+# blocks shoved out of place.
+LIFT_DZ = 0.01
 STACK_XY_TOL = 0.018
 STACK_Z_TOL = 0.012
 DISTURB_TOL = 0.015
@@ -237,10 +238,10 @@ class SO101BlockStack(BaseEnv):
             & ((stack_z - BLOCK_SIDE).abs() < STACK_Z_TOL)
             & (moved < DISTURB_TOL).all(-1)
         )
-        lifted = (held[:, 2] - spawn[:, 2]) > LIFT_DZ
         grasping = torch.stack(
             [self.agent.is_grasping(self.blocks[name]) for name in BLOCK_NAMES], dim=1
         )[rows, self.held]
+        lifted = grasping & ((held[:, 2] - spawn[:, 2]) > LIFT_DZ)
 
         self.milestones["grasped"] |= grasping
         self.milestones["lifted"] |= lifted

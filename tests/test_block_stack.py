@@ -286,3 +286,4 @@ def test_an_agent_stacks_through_eval(embodiment, scene, layouts, tmp_path):
     assert log.status == "success"
     (record,) = sink.records
     assert record.termination_reason == "success"
+    assert log.results.metrics == {"success_at_end": 1.0, "lifted": 1.0}

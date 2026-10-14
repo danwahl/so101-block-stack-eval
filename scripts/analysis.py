@@ -25,7 +25,13 @@ OPENROUTER = "https://openrouter.ai/api/v1"
 
 COLUMNS = [
     Column("stacked", "Stacked", "higher", "pct", "Layouts where the named block ends stacked"),
-    Column("lifted", "Lifted", "higher", "pct", "Layouts where the named block left the table"),
+    Column(
+        "lifted",
+        "Lifted",
+        "higher",
+        "pct",
+        "Layouts where the jaws held the named block off the table",
+    ),
     Column("errored", "Errored", "lower", "pct", "Trials ended by an error"),
     Column("cost", "Cost", "lower", ".3f", "Mean model cost per trial, in US dollars"),
 ]
