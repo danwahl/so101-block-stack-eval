@@ -29,10 +29,13 @@ Agent trials from [so101-block-stack-eval](https://github.com/danwahl/so101-bloc
 an LLM driving a simulated SO-101 arm to stack one named block on another.
 
 `data/trials.parquet` has one row per trial: the model, the layout, whether the block
-ended stacked or was ever lifted, whether the trial ended in an error, its model cost in
-US dollars, and the hash of the prompt it was sent. `logs/<provider>/<model>/` holds each
-run's Inspect Robots eval log, with each trial's actions, transcript, and wire calls (the
-requests and responses, with images under `wire/<run>/blobs/`).
+ended stacked and whether the jaws ever held it off the table, whether the trial ended in
+an error, its model calls, prompt and completion tokens, minutes spent waiting on the
+model, model cost in US dollars, and the hash of the prompt it was sent.
+`logs/<provider>/<model>/` holds each run's Inspect Robots eval log, with each trial's
+actions, transcript, and wire calls (the requests and responses, with images under
+`wire/<run>/blobs/`). A log whose errored scenes were rerun draws its trials from both
+runs' directories.
 """
 
 
