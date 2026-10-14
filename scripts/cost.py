@@ -11,7 +11,7 @@ from pathlib import Path
 
 def main():
     totals = defaultdict(lambda: [0, 0.0])
-    for path in Path(sys.argv[1]).rglob("wire/*/*/calls.jsonl"):
+    for path in Path(sys.argv[1]).resolve().rglob("wire/*/*/calls.jsonl"):
         model = path.parts[-5]
         for line in path.open():
             usage = (json.loads(line).get("response") or {}).get("usage") or {}

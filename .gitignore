@@ -11,3 +11,7 @@ dist/
 outputs/
 
 .env
+
+# Built by scripts/export.py and evalib site.
+dataset/
+_site/

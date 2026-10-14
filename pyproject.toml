@@ -22,6 +22,7 @@ dependencies = [
 # commit. That branch also supplies inspect-robots itself: the plugin names core as a
 # workspace source, so both track the fork's pre-release main.
 inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", branch = "agent-custom-tools" }
+evalib = { git = "https://github.com/danwahl/evalib", tag = "v0.2.2" }
 
 # Installed so Inspect Robots finds these by name without importing them first.
 [project.entry-points."inspect_robots.embodiments"]
@@ -32,7 +33,10 @@ so101-block-stack = "so101_block_stack_eval.task:stack"
 
 [dependency-groups]
 dev = [
+    "evalib",
     "httpx",
+    "pandas",
+    "pyarrow",
     "pytest>=8",
     "ruff>=0.6",
 ]

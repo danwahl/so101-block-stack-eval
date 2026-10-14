@@ -2,6 +2,11 @@
 
 The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/robocurve/inspect-robots) embodiment and task. An SO-101 arm stands at a table with three 30 mm cubes, red, green and blue, and is asked to stack one named block on another. A wrist camera and an overhead camera see the table.
 
+## Leaderboard
+
+<!-- leaderboard:start -->
+<!-- leaderboard:end -->
+
 ## Task
 
 `so101-block-stack` holds 150 layouts, one scene each, in `src/so101_block_stack_eval/layouts.jsonl`. Each layout gives:
@@ -22,19 +27,26 @@ A trial succeeds on the first step the named block sits on its target, out of th
 ```
 uv sync
 export OPENROUTER_API_KEY=...
-uv run python scripts/run.py z-ai/glm-5.3-flash --episodes 30
+uv run python scripts/run.py z-ai/glm-5.3-flash
 ```
 
-`scripts/run.py` passes the agent the embodiment's `pre_check` and `locate_points`; the `inspect-robots run` CLI cannot pass either. Without `pre_check`, a move out of reach stalls the arm instead of returning a reason. Logs go under `outputs/`, and `scripts/cost.py outputs` totals what the model calls cost.
+`scripts/run.py` passes the agent the embodiment's `pre_check` and `locate_points`; the `inspect-robots run` CLI cannot pass either. Without `pre_check`, a move out of reach stalls the arm instead of returning a reason. Every model goes through OpenRouter, so each is sent the same request format and each call reports its cost. A run covers the first 50 layouts and logs to `outputs/<provider>/<model>/`.
 
 Only the cameras render on the GPU. To run without one, hide it and render with Mesa's software Vulkan, at about 0.1 s a step:
 
 ```
 CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json \
-    uv run python scripts/run.py z-ai/glm-5.3-flash --episodes 30
+    uv run python scripts/run.py z-ai/glm-5.3-flash
 ```
 
-The agent plugin's custom tools are not released yet, so `inspect-robots-agent` and `inspect-robots` come from a commit on [a fork](https://github.com/danwahl/inspect-robots).
+## Results
+
+- `scripts/analysis.py` builds the leaderboard from each model's latest 50-layout run, with 95% bootstrap intervals over layouts. It writes `results.json` and the table above. It stops if the runs were sent different system prompts or tool schemas, and the table names the hash they share as the prompt version.
+- `scripts/export.py` gathers the counted runs into `dataset/` for the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval): a table of trials, and each run's log with its actions, transcripts and wire calls.
+- `scripts/render.py` animates a trial as a WebP by replaying its logged actions through the sim.
+- `scripts/cost.py` totals what the model calls under a log directory cost.
+
+The agent plugin's custom tools are not released yet, so `inspect-robots-agent` and `inspect-robots` come from the `agent-custom-tools` branch of [a fork](https://github.com/danwahl/inspect-robots); `uv.lock` records the commit.
 
 The arm's description in `src/so101_block_stack_eval/description/` is adapted from the SO-101 in [TheRobotStudio's SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), under the Apache 2.0 license.
 
