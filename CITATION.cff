@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this benchmark, please cite it as below."
+title: "so101-block-stack-eval: LLM agents stacking blocks with a simulated SO-101 arm"
+type: software
+authors:
+  - family-names: Wahl
+    given-names: Dan
+repository-code: "https://github.com/danwahl/so101-block-stack-eval"
+license: Apache-2.0
+version: 0.1.0
+date-released: 2026-10-14
+keywords:
+  - robotics
+  - LLM agents
+  - evaluation
+  - Inspect Robots
