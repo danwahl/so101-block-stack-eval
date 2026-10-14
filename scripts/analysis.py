@@ -32,8 +32,7 @@ COLUMNS = [
         "pct",
         "Layouts where the jaws held the named block off the table",
     ),
-    Column("errored", "Errored", "lower", "pct", "Trials ended by an error"),
-    Column("cost", "Cost", "lower", ".2f", "Model cost of the 50-layout run, in US dollars"),
+    Column("cost", "Cost", "lower", ".3f", "Mean model cost per trial, in US dollars"),
     Column("calls", "Calls", "lower", ".0f", "Mean model calls per trial"),
     Column("tokens_in", "Tokens in", "lower", ",.0f", "Mean prompt tokens per trial"),
     Column(
@@ -124,8 +123,7 @@ def load_trials(root: Path) -> pd.DataFrame:
 
 
 def scores(trials: pd.DataFrame) -> dict[str, float]:
-    means = {column.key: trials[column.key].mean() for column in COLUMNS}
-    return {**means, "cost": means["cost"] * EPISODES}
+    return {column.key: trials[column.key].mean() for column in COLUMNS}
 
 
 def main():
@@ -153,6 +151,8 @@ def main():
         info={"provider": "Provider"},
         notes=[
             f"{EPISODES} layouts, one trial each; 95% bootstrap interval over layouts. "
+            "Cost in US dollars, calls, tokens and minutes waiting on the model are means "
+            "per trial. "
             f"Prompt version `{prompts[0]}`."
         ],
     )

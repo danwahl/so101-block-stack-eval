@@ -16,18 +16,11 @@
    "description": "Layouts where the jaws held the named block off the table"
   },
   {
-   "key": "errored",
-   "label": "Errored",
-   "better": "lower",
-   "format": "pct",
-   "description": "Trials ended by an error"
-  },
-  {
    "key": "cost",
    "label": "Cost",
    "better": "lower",
-   "format": ".2f",
-   "description": "Model cost of the 50-layout run, in US dollars"
+   "format": ".3f",
+   "description": "Mean model cost per trial, in US dollars"
   },
   {
    "key": "calls",
@@ -76,15 +69,10 @@
      "lo": 0.8,
      "hi": 0.98
     },
-    "errored": {
-     "value": 0.0,
-     "lo": 0.0,
-     "hi": 0.0
-    },
     "cost": {
-     "value": 3.2720167624000007,
-     "lo": 2.4123212544099997,
-     "hi": 4.122854913589999
+     "value": 0.06544033524800001,
+     "lo": 0.0482464250882,
+     "hi": 0.08245709827179998
     },
     "calls": {
      "value": 49.34,
@@ -125,15 +113,10 @@
      "lo": 0.5195000000000005,
      "hi": 0.78
     },
-    "errored": {
-     "value": 0.0,
-     "lo": 0.0,
-     "hi": 0.0
-    },
     "cost": {
-     "value": 1.5202112669999999,
-     "lo": 1.174324853775,
-     "hi": 1.891288997225
+     "value": 0.030404225339999997,
+     "lo": 0.0234864970755,
+     "hi": 0.037825779944499996
     },
     "calls": {
      "value": 48.84,
@@ -174,15 +157,10 @@
      "lo": 0.22,
      "hi": 0.48
     },
-    "errored": {
-     "value": 0.0,
-     "lo": 0.0,
-     "hi": 0.0
-    },
     "cost": {
-     "value": 0.529055125,
-     "lo": 0.33550072312499996,
-     "hi": 0.77679584175
+     "value": 0.0105811025,
+     "lo": 0.0067100144624999995,
+     "hi": 0.015535916835
     },
     "calls": {
      "value": 21.06,
@@ -211,7 +189,7 @@
   }
  ],
  "notes": [
-  "50 layouts, one trial each; 95% bootstrap interval over layouts. Prompt version `8dd3b142780d`."
+  "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`."
  ],
  "updated": "2026-10-14"
 }
