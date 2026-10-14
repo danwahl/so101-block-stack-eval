@@ -60,6 +60,9 @@ HIGH = np.array([0.50, 0.45, 0.45, math.pi, math.pi, 1.0])
 # A step's worth of motion at 10 Hz: 5 cm/s, half a radian a second, and a second from
 # open to shut.
 MAX_STEP = (0.005, 0.005, 0.005, 0.05, 0.05, 0.1)
+# Under until_done, the step a policy stops on holds the arm a second, so a stack that is
+# going to fall has fallen before the trial is scored.
+SETTLE_STEPS = 10
 
 # The most any joint may move in one step, as on the hardware.
 MAX_JOINT_STEP = math.radians(10.0)
@@ -235,7 +238,10 @@ LOCATE_POINTS = CustomTool(
 class SimEmbodiment(EmbodimentBase):
     """One ``SO101BlockStack-v1`` env, reset per scene to that scene's layout."""
 
-    def __init__(self):
+    def __init__(self, until_done: bool = False):
+        """``until_done`` runs a trial on past a stack, until the policy stops it, and
+        settles the stopping step for SETTLE_STEPS."""
+        self._until_done = until_done
         # One env steps faster on the CPU, where a joint write also lands without a flush.
         self._env = gym.make(ENV_ID, num_envs=1, obs_mode="rgb", sim_backend="physx_cpu").unwrapped
         self._q = None
@@ -300,17 +306,21 @@ class SimEmbodiment(EmbodimentBase):
         # block stops pressing once its command leads the arm by the step limit.
         if not refused:
             self._q, _ = solve(target)
-        obs, _, _, _, info = self._env.step(
-            torch.as_tensor(self._q, dtype=torch.float32, device=self._env.device)
-        )
+        command = torch.as_tensor(self._q, dtype=torch.float32, device=self._env.device)
+        settling = self._until_done and action.meta.get("request_stop")
+        for _ in range(SETTLE_STEPS if settling else 1):
+            obs, _, _, _, info = self._env.step(command)
         success = bool(info["success"][0])
+        terminated = success and not self._until_done
         return StepResult(
             observation=self._observation(obs),
             reward=float(success),
-            terminated=success,
-            termination_reason="success" if success else None,
+            terminated=terminated,
+            termination_reason="success" if terminated else None,
             info={
                 "success": success,
+                "standing": bool(info["standing"][0]),
+                "stacked": bool(info["stacked"][0]),
                 "lifted": bool(info["lifted"][0]),
                 "grasped": bool(info["grasped"][0]),
                 "refused": refused,

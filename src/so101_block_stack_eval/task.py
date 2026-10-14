@@ -16,27 +16,39 @@ LAYOUTS = Path(__file__).parent / "layouts.jsonl"
 
 
 @dataclass(frozen=True)
-class _Lifted:
-    name: str = "lifted"
+class _AtEnd:
+    """An env flag on the trial's last step. A latched flag says whether it ever held."""
+
+    name: str
 
     def __call__(self, record, target):
-        # The env latches it, so the last step says whether it ever happened.
         steps = record.steps
-        return Score(value=float(bool(steps and steps[-1].result.info.get("lifted"))))
+        return Score(value=float(bool(steps and steps[-1].result.info.get(self.name))))
 
 
-def stack(layouts: str | None = None, episodes: int | None = None, max_steps: int = 600) -> Task:
+def stack(
+    layouts: str | None = None,
+    episodes: int | None = None,
+    max_steps: int = 600,
+    until_done: bool = False,
+) -> Task:
     """One scene per line of ``layouts``, the first ``episodes`` of them.
 
     Each scene carries its block spawns, its colour pair and the arm's start, which the
     embodiment places. A trial succeeds the first step the stack holds, and ``lifted`` says
     whether the jaws ever held the named block off the table.
+
+    With ``until_done``, for an embodiment made with it, the task is
+    ``so101-block-stack-until-done`` and the trial runs until the policy stops it, its
+    stopping step settled. ``standing`` scores the stack on the last step, seated with the
+    arm touching neither block, and ``stacked`` says whether it ever held as the default
+    trial scores it.
     """
     path = Path(layouts) if layouts else LAYOUTS
     with path.open() as file:
         rows = [json.loads(line) for line in file][:episodes]
     return Task(
-        name="so101-block-stack",
+        name="so101-block-stack-until-done" if until_done else "so101-block-stack",
         scenes=[
             Scene(
                 id=f"layout-{i:03d}",
@@ -55,6 +67,10 @@ def stack(layouts: str | None = None, episodes: int | None = None, max_steps: in
             )
             for i, row in enumerate(rows)
         ],
-        scorer=[success_at_end(), _Lifted()],
+        scorer=(
+            [_AtEnd("standing"), _AtEnd("stacked"), _AtEnd("lifted")]
+            if until_done
+            else [success_at_end(), _AtEnd("lifted")]
+        ),
         max_steps=max_steps,
     )

@@ -149,7 +149,8 @@ class SO101BlockStack(BaseEnv):
             self.target = torch.zeros(self.num_envs, dtype=torch.long)
             self.spawns = torch.zeros(self.num_envs, 3, 3)
             self.milestones = {
-                name: torch.zeros(self.num_envs, dtype=torch.bool) for name in ("grasped", "lifted")
+                name: torch.zeros(self.num_envs, dtype=torch.bool)
+                for name in ("grasped", "lifted", "stacked")
             }
 
     def _initialize_episode(self, env_idx, options):
@@ -221,8 +222,9 @@ class SO101BlockStack(BaseEnv):
         """Whether the commanded block was lifted, and whether it is stacked on its target.
 
         A stack is seated and out of the jaws, so a block held at stacking height does not
-        count. ``grasped`` and ``lifted`` latch; ``seated`` and ``success`` are read fresh
-        each step.
+        count. A stack is ``standing`` when, further, no part of the arm touches either of
+        its blocks. ``grasped``, ``lifted`` and ``stacked`` latch; ``seated``, ``success``
+        and ``standing`` are read fresh each step.
         """
         pos = self._block_positions()
         rows = torch.arange(self.num_envs, device=self.device)
@@ -242,13 +244,21 @@ class SO101BlockStack(BaseEnv):
             [self.agent.is_grasping(self.blocks[name]) for name in BLOCK_NAMES], dim=1
         )[rows, self.held]
         lifted = grasping & ((held[:, 2] - spawn[:, 2]) > LIFT_DZ)
+        touched = torch.stack(
+            [self.agent.is_touching(self.blocks[name]) for name in BLOCK_NAMES], dim=1
+        )
+        touching = touched[rows, self.held] | touched[rows, self.target]
+        success = seated & ~grasping
 
         self.milestones["grasped"] |= grasping
         self.milestones["lifted"] |= lifted
+        self.milestones["stacked"] |= success
         return {
-            "success": seated & ~grasping,
+            "success": success,
             "seated": seated,
+            "standing": seated & ~touching,
             "lifted": self.milestones["lifted"].clone(),
+            "stacked": self.milestones["stacked"].clone(),
             "grasped": self.milestones["grasped"].clone(),
             "stack_xy": stack_xy,
             "stack_z": stack_z,

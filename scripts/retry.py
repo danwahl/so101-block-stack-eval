@@ -103,7 +103,8 @@ def main():
     if not errored:
         print(f"{args.log}: every scene succeeded")
         return
-    task = stack(episodes=len(old.samples), max_steps=old.eval.max_steps)
+    until_done = old.eval.task.endswith("-until-done")
+    task = stack(episodes=len(old.samples), max_steps=old.eval.max_steps, until_done=until_done)
     logged = [(s.scene_id, s.instruction, s.scene_metadata) for s in old.samples]
     rebuilt = [(s.id, s.instruction, dict(s.metadata)) for s in task.scenes]
     if old.eval.task != task.name or as_json(logged) != as_json(rebuilt):
@@ -114,7 +115,7 @@ def main():
         raise SystemExit(f"{args.log}: the log's epochs are not this task's")
 
     config = old.eval.policy_config
-    embodiment = SimEmbodiment()
+    embodiment = SimEmbodiment(until_done=until_done)
     try:
         policy = agent(
             config["model"],

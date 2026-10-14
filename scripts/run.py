@@ -55,12 +55,17 @@ def main():
     parser.add_argument(
         "--no-locate", action="store_true", help="withhold the locate_points tool from the agent"
     )
+    parser.add_argument(
+        "--until-done",
+        action="store_true",
+        help="run each trial on past a stack until the agent stops it, and score where it ends",
+    )
     args = parser.parse_args()
 
-    embodiment = SimEmbodiment()
+    embodiment = SimEmbodiment(until_done=args.until_done)
     try:
         (log,) = ir_eval(
-            stack(episodes=args.episodes, max_steps=args.max_steps),
+            stack(episodes=args.episodes, max_steps=args.max_steps, until_done=args.until_done),
             agent(
                 args.model,
                 embodiment,

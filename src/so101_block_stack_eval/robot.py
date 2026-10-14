@@ -75,3 +75,13 @@ class SO101(BaseAgent):
             ]
         )
         return (forces >= min_force).all(dim=0)
+
+    def is_touching(self, actor):
+        """Whether any link of the arm is in contact with ``actor``."""
+        forces = torch.stack(
+            [
+                torch.linalg.norm(self.scene.get_pairwise_contact_forces(link, actor), dim=1)
+                for link in self.robot.links
+            ]
+        )
+        return (forces > 0).any(dim=0)
