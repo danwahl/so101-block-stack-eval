@@ -16,6 +16,13 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 <!-- leaderboard:end -->
 
+Each model on layout 42, "stack the red block on the green block", from the top camera at twice real time:
+
+| gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash |
+|:-:|:-:|:-:|
+| ![gpt-6-luna on layout 42](images/gpt-6-luna-layout-042.webp) | ![deepseek-v4.1-flash on layout 42](images/deepseek-v4.1-flash-layout-042.webp) | ![glm-5.3-flash on layout 42](images/glm-5.3-flash-layout-042.webp) |
+| 68 steps | 80 steps | 282 steps |
+
 ## Task
 
 `so101-block-stack` holds 150 layouts, one scene each, in `src/so101_block_stack_eval/layouts.jsonl`. Each layout gives:
