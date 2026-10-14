@@ -5,6 +5,15 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 ## Leaderboard
 
 <!-- leaderboard:start -->
+
+| # | Name | Provider | Stacked | Lifted | Errored | Cost | Calls | Tokens in | Tokens out | Minutes |
+|--:|:--|:--|--:|--:|--:|--:|--:|--:|--:|--:|
+| 1 | deepseek-v4.1-flash | deepseek | **70% (58%–82%)** | **90%** | 0% | 3.27 | 49 | 544,810 | 67,682 | 10.2 |
+| 2 | glm-5.3-flash | z-ai | 40% (26%–54%) | 64% | 0% | 1.52 | 49 | 468,392 | 6,825 | 2.8 |
+| 3 | gpt-6-luna | openai | 22% (12%–34%) | 34% | 0% | **0.53** | **21** | **118,672** | **3,125** | **1.1** |
+
+50 layouts, one trial each; 95% bootstrap interval over layouts. Prompt version `8dd3b142780d`.
+
 <!-- leaderboard:end -->
 
 ## Task

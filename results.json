@@ -1,0 +1,217 @@
+{
+ "name": "so101-block-stack",
+ "columns": [
+  {
+   "key": "stacked",
+   "label": "Stacked",
+   "better": "higher",
+   "format": "pct",
+   "description": "Layouts where the named block ends stacked"
+  },
+  {
+   "key": "lifted",
+   "label": "Lifted",
+   "better": "higher",
+   "format": "pct",
+   "description": "Layouts where the jaws held the named block off the table"
+  },
+  {
+   "key": "errored",
+   "label": "Errored",
+   "better": "lower",
+   "format": "pct",
+   "description": "Trials ended by an error"
+  },
+  {
+   "key": "cost",
+   "label": "Cost",
+   "better": "lower",
+   "format": ".2f",
+   "description": "Model cost of the 50-layout run, in US dollars"
+  },
+  {
+   "key": "calls",
+   "label": "Calls",
+   "better": "lower",
+   "format": ".0f",
+   "description": "Mean model calls per trial"
+  },
+  {
+   "key": "tokens_in",
+   "label": "Tokens in",
+   "better": "lower",
+   "format": ",.0f",
+   "description": "Mean prompt tokens per trial"
+  },
+  {
+   "key": "tokens_out",
+   "label": "Tokens out",
+   "better": "lower",
+   "format": ",.0f",
+   "description": "Mean completion tokens per trial, reasoning included"
+  },
+  {
+   "key": "minutes",
+   "label": "Minutes",
+   "better": "lower",
+   "format": ".1f",
+   "description": "Mean time per trial spent waiting on the model"
+  }
+ ],
+ "info": {
+  "provider": "Provider"
+ },
+ "rows": [
+  {
+   "name": "deepseek-v4.1-flash",
+   "kind": "model",
+   "scores": {
+    "stacked": {
+     "value": 0.7,
+     "lo": 0.58,
+     "hi": 0.82
+    },
+    "lifted": {
+     "value": 0.9,
+     "lo": 0.8,
+     "hi": 0.98
+    },
+    "errored": {
+     "value": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "cost": {
+     "value": 3.2720167624000007,
+     "lo": 2.4123212544099997,
+     "hi": 4.122854913589999
+    },
+    "calls": {
+     "value": 49.34,
+     "lo": 41.87800000000001,
+     "hi": 56.8005
+    },
+    "tokens_in": {
+     "value": 544809.76,
+     "lo": 417179.5165,
+     "hi": 677999.653
+    },
+    "tokens_out": {
+     "value": 67682.02,
+     "lo": 52227.116,
+     "hi": 83003.579
+    },
+    "minutes": {
+     "value": 10.173133800903955,
+     "lo": 7.659117149498065,
+     "hi": 12.91776846509377
+    }
+   },
+   "info": {
+    "provider": "deepseek"
+   }
+  },
+  {
+   "name": "glm-5.3-flash",
+   "kind": "model",
+   "scores": {
+    "stacked": {
+     "value": 0.4,
+     "lo": 0.26,
+     "hi": 0.54
+    },
+    "lifted": {
+     "value": 0.64,
+     "lo": 0.5195000000000005,
+     "hi": 0.78
+    },
+    "errored": {
+     "value": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "cost": {
+     "value": 1.5202112669999999,
+     "lo": 1.174324853775,
+     "hi": 1.891288997225
+    },
+    "calls": {
+     "value": 48.84,
+     "lo": 40.379000000000005,
+     "hi": 57.120999999999995
+    },
+    "tokens_in": {
+     "value": 468391.94,
+     "lo": 358502.37450000003,
+     "hi": 579741.7115
+    },
+    "tokens_out": {
+     "value": 6824.74,
+     "lo": 5573.5995,
+     "hi": 8050.262
+    },
+    "minutes": {
+     "value": 2.840899093310038,
+     "lo": 2.1328922807117303,
+     "hi": 3.6185470884919155
+    }
+   },
+   "info": {
+    "provider": "z-ai"
+   }
+  },
+  {
+   "name": "gpt-6-luna",
+   "kind": "model",
+   "scores": {
+    "stacked": {
+     "value": 0.22,
+     "lo": 0.12,
+     "hi": 0.34
+    },
+    "lifted": {
+     "value": 0.34,
+     "lo": 0.22,
+     "hi": 0.48
+    },
+    "errored": {
+     "value": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "cost": {
+     "value": 0.529055125,
+     "lo": 0.33550072312499996,
+     "hi": 0.77679584175
+    },
+    "calls": {
+     "value": 21.06,
+     "lo": 17.1985,
+     "hi": 25.121
+    },
+    "tokens_in": {
+     "value": 118672.4,
+     "lo": 82365.6035,
+     "hi": 160122.84149999998
+    },
+    "tokens_out": {
+     "value": 3125.42,
+     "lo": 1500.941,
+     "hi": 6028.6314999999995
+    },
+    "minutes": {
+     "value": 1.062611622651418,
+     "lo": 0.7695784257451694,
+     "hi": 1.4616571837683519
+    }
+   },
+   "info": {
+    "provider": "openai"
+   }
+  }
+ ],
+ "notes": [
+  "50 layouts, one trial each; 95% bootstrap interval over layouts. Prompt version `8dd3b142780d`."
+ ],
+ "updated": "2026-10-14"
+}

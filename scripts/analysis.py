@@ -33,7 +33,17 @@ COLUMNS = [
         "Layouts where the jaws held the named block off the table",
     ),
     Column("errored", "Errored", "lower", "pct", "Trials ended by an error"),
-    Column("cost", "Cost", "lower", ".3f", "Mean model cost per trial, in US dollars"),
+    Column("cost", "Cost", "lower", ".2f", "Model cost of the 50-layout run, in US dollars"),
+    Column("calls", "Calls", "lower", ".0f", "Mean model calls per trial"),
+    Column("tokens_in", "Tokens in", "lower", ",.0f", "Mean prompt tokens per trial"),
+    Column(
+        "tokens_out",
+        "Tokens out",
+        "lower",
+        ",.0f",
+        "Mean completion tokens per trial, reasoning included",
+    ),
+    Column("minutes", "Minutes", "lower", ".1f", "Mean time per trial spent waiting on the model"),
 ]
 
 
@@ -70,14 +80,21 @@ def fingerprint(directory: Path, trial: dict) -> str | None:
     return hashlib.sha256(text.encode()).hexdigest()[:12]
 
 
-def trial_cost(directory: Path, trial: dict) -> float:
+def trial_usage(directory: Path, trial: dict) -> dict[str, float]:
+    """The trial's model calls, tokens, cost and model time, from its wire log."""
+    usage = {"cost": 0.0, "calls": 0, "tokens_in": 0, "tokens_out": 0, "minutes": 0.0}
     if "wire_capture" not in trial:
-        return 0.0
+        return usage
     with (directory / trial["wire_capture"]).open() as file:
-        return sum(
-            ((json.loads(line).get("response") or {}).get("usage") or {}).get("cost", 0.0)
-            for line in file
-        )
+        for line in file:
+            call = json.loads(line)
+            reported = (call.get("response") or {}).get("usage") or {}
+            usage["cost"] += reported.get("cost", 0.0)
+            usage["calls"] += 1
+            usage["tokens_in"] += reported.get("prompt_tokens", 0)
+            usage["tokens_out"] += reported.get("completion_tokens", 0)
+            usage["minutes"] += call["duration_s"] / 60
+    return usage
 
 
 def load_trials(root: Path) -> pd.DataFrame:
@@ -99,7 +116,7 @@ def load_trials(root: Path) -> pd.DataFrame:
                         "stacked": scores.get("success_at_end", 0.0),
                         "lifted": scores.get("lifted", 0.0),
                         "errored": float(not scores),
-                        "cost": trial_cost(path.parent, trial),
+                        **trial_usage(path.parent, trial),
                         "prompt": fingerprint(path.parent, trial),
                     }
                 )
@@ -107,7 +124,8 @@ def load_trials(root: Path) -> pd.DataFrame:
 
 
 def scores(trials: pd.DataFrame) -> dict[str, float]:
-    return {column.key: trials[column.key].mean() for column in COLUMNS}
+    means = {column.key: trials[column.key].mean() for column in COLUMNS}
+    return {**means, "cost": means["cost"] * EPISODES}
 
 
 def main():
