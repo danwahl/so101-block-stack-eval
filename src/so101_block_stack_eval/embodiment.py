@@ -149,10 +149,10 @@ def check_motion(waypoints, start=None):
     """Why a move cannot be made, or None.
 
     A waypoint must solve inside the joint limits, and no joint may move more than
-    ``MAX_JOINT_STEP`` from the one before, ``start`` being the joints the arm was last sent
-    to. Close to the pan axis a small move of the grip can need a large turn of the base,
-    which the physical arm's own step cap would clip mid-motion. An unreachable target is
-    reported over any earlier failure on the way.
+    ``MAX_JOINT_STEP`` from the one before, ``start`` being the joints the arm is at, from
+    which the physical arm's step cap also measures. Close to the pan axis a small move of
+    the grip can need a large turn of the base, which that cap would clip mid-motion. An
+    unreachable target is reported over any earlier failure on the way.
     """
     q, ok = solve(waypoints)
     if start is not None:
@@ -239,6 +239,7 @@ class SimEmbodiment(EmbodimentBase):
         # One env steps faster on the CPU, where a joint write also lands without a flush.
         self._env = gym.make(ENV_ID, num_envs=1, obs_mode="rgb", sim_backend="physx_cpu").unwrapped
         self._q = None
+        self._joints = None
         self._instruction = None
         state = StateSpec(
             fields=(
@@ -293,9 +294,10 @@ class SimEmbodiment(EmbodimentBase):
 
     def step(self, action: Action) -> StepResult:
         target = np.clip(action.data, LOW, HIGH)[None]
-        refused = check_motion(target, self._q[0]) is not None
+        refused = check_motion(target, self._joints) is not None
         # A refused target holds the arm where it was last sent, so the agent's arrival
-        # check reports the shortfall.
+        # check reports the shortfall. Measured from where the arm is, a move that meets a
+        # block stops pressing once its command leads the arm by the step limit.
         if not refused:
             self._q, _ = solve(target)
         obs, _, _, _, info = self._env.step(
@@ -317,7 +319,7 @@ class SimEmbodiment(EmbodimentBase):
 
     def pre_check(self, waypoints):
         """``check_motion`` from where the arm is; hand it to the agent as its ``pre_check``."""
-        return check_motion(waypoints, self._q[0])
+        return check_motion(waypoints, self._joints)
 
     def close(self) -> None:
         self._env.close()
@@ -325,6 +327,7 @@ class SimEmbodiment(EmbodimentBase):
     def _observation(self, obs):
         pose = self._env.agent.tcp_pose
         qpos = self._env.agent.robot.get_qpos()[0].double().cpu().numpy()
+        self._joints = qpos.copy()
         return Observation(
             images={name: obs["sensor_data"][name]["rgb"][0].cpu().numpy() for name in CAMERAS},
             state={

@@ -209,6 +209,15 @@ def test_a_lunge_is_refused():
     assert reason is not None and "degrees in one step" in reason
 
 
+def test_moves_are_checked_from_where_the_arm_stalled(embodiment, scene):
+    """An arm left short of its last command, as a block would leave it, can still move."""
+    here = embodiment.reset(scene).state["eef_state"]
+    embodiment._q, _ = solve((here + np.array([-0.06, 0.0, -0.06, 0.0, 0.0, 0.0]))[None])
+    nudge = here + np.array([-0.004, 0.0, 0.0, 0.0, 0.0, 0.0])
+    assert embodiment.pre_check(nudge[None]) is None
+    assert not embodiment.step(Action(data=nudge)).info["refused"]
+
+
 def test_a_refused_step_holds_the_last_target(embodiment, scene):
     embodiment.reset(scene)
     held = embodiment._q.copy()

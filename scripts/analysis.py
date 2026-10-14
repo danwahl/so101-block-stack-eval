@@ -3,11 +3,11 @@
     python scripts/analysis.py
 
 Each model's latest complete run over the first EPISODES layouts counts, one trial per
-layout, through OpenRouter's chat API at the provider's default reasoning effort. A trial that
-ended in an error, such as three failed turns in a row, counts as neither stacked nor
-lifted. The 95% bootstrap intervals resample layouts. Every counted trial must have seen
-the same system prompt and tool schemas; their hash is the prompt version, written to
-results.json and the README with the leaderboard.
+layout, through OpenRouter's chat API at low reasoning effort. A trial that ended in an
+error, such as three failed turns in a row, counts as neither stacked nor lifted. The 95%
+bootstrap intervals resample layouts. Every counted trial must have seen the same system
+prompt and tool schemas; their hash is the prompt version, written to results.json and
+the README with the leaderboard.
 """
 
 import argparse
@@ -41,7 +41,7 @@ def latest_runs(root: Path):
         spec, config = log["eval"], log["eval"]["policy_config"]
         if spec["task"] != TASK or log["status"] != "success":
             continue
-        if (config["base_url"], config["wire"], config["effort"]) != (OPENROUTER, "chat", None):
+        if (config["base_url"], config["wire"], config["effort"]) != (OPENROUTER, "chat", "low"):
             continue
         if sorted(s["scene_id"] for s in log["samples"]) != LAYOUTS:
             continue

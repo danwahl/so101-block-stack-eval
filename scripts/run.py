@@ -38,7 +38,7 @@ def main():
     parser.add_argument("--episodes", type=int, default=50, help="first N held-out layouts")
     parser.add_argument("--max-steps", type=int, default=600)
     parser.add_argument("--max-llm-calls", type=int, default=100)
-    parser.add_argument("--effort", help="reasoning effort; the provider's default if unset")
+    parser.add_argument("--effort", default="low", help="reasoning effort")
     parser.add_argument("--log-dir", help="defaults to outputs/<provider>/<model>")
     parser.add_argument(
         "--no-locate", action="store_true", help="withhold the locate_points tool from the agent"
@@ -55,7 +55,7 @@ def main():
                 max_llm_calls=args.max_llm_calls,
                 pre_check=embodiment.pre_check,
                 tools=() if args.no_locate else (LOCATE_POINTS,),
-                **({"effort": args.effort} if args.effort else {}),
+                effort=args.effort,
             ),
             embodiment,
             log_dir=args.log_dir or f"outputs/{args.model}",

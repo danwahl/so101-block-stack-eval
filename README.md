@@ -30,7 +30,7 @@ export OPENROUTER_API_KEY=...
 uv run python scripts/run.py z-ai/glm-5.3-flash
 ```
 
-`scripts/run.py` passes the agent the embodiment's `pre_check` and `locate_points`; the `inspect-robots run` CLI cannot pass either. Without `pre_check`, a move out of reach stalls the arm instead of returning a reason. Every model goes through OpenRouter, so each is sent the same request format and each call reports its cost. A run covers the first 50 layouts and logs to `outputs/<provider>/<model>/`.
+`scripts/run.py` passes the agent the embodiment's `pre_check` and `locate_points`; the `inspect-robots run` CLI cannot pass either. Without `pre_check`, a move out of reach stalls the arm instead of returning a reason. Every model goes through OpenRouter at low reasoning effort, so each is sent the same request format and each call reports its cost. A run covers the first 50 layouts and logs to `outputs/<provider>/<model>/`.
 
 Only the cameras render on the GPU. To run without one, hide it and render with Mesa's software Vulkan, at about 0.1 s a step:
 
