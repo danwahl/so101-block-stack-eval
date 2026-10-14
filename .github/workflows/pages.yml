@@ -1,0 +1,33 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      # The site needs only evalib, not the sim, so it skips the project's own install.
+      - run: >-
+          uvx --from git+https://github.com/danwahl/evalib@v0.2.2 evalib site
+          --repo danwahl/so101-block-stack-eval
+          --data-url https://huggingface.co/datasets/drwahl/so101-block-stack-eval
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
+        id: deployment
