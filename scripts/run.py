@@ -58,7 +58,8 @@ def main():
     parser.add_argument(
         "--until-done",
         action="store_true",
-        help="run each trial on past a stack until the agent stops it, and score where it ends",
+        help="run each trial on past a stack until the agent stops it or the steps run out, "
+        "then clear the arm away and score the stack left standing",
     )
     args = parser.parse_args()
 

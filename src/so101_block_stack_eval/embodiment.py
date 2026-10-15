@@ -60,9 +60,13 @@ HIGH = np.array([0.50, 0.45, 0.45, math.pi, math.pi, 1.0])
 # A step's worth of motion at 10 Hz: 5 cm/s, half a radian a second, and a second from
 # open to shut.
 MAX_STEP = (0.005, 0.005, 0.005, 0.05, 0.05, 0.1)
-# Under until_done, the step a policy stops on holds the arm a second, so a stack that is
-# going to fall has fallen before the trial is scored.
+# Under until_done, a trial's last step holds the arm a second, then moves it to
+# CLEAR_QPOS and waits another, so the stack is scored standing on its own.
 SETTLE_STEPS = 10
+# The arm pointing straight up, every link in one vertical column 69 mm in front of the
+# base and clear of any place a block can reach. The description's zero pose leans the
+# upper arm and folds the forearm, so these are the angles that make each link vertical.
+CLEAR_QPOS = np.array([[0.0, -0.2438, -1.2885, -0.0368, 0.0, GRIPPER_OPEN]])
 
 # The most any joint may move in one step, as on the hardware.
 MAX_JOINT_STEP = math.radians(10.0)
@@ -239,9 +243,11 @@ class SimEmbodiment(EmbodimentBase):
     """One ``SO101BlockStack-v1`` env, reset per scene to that scene's layout."""
 
     def __init__(self, until_done: bool = False):
-        """``until_done`` runs a trial on past a stack, until the policy stops it, and
-        settles the stopping step for SETTLE_STEPS."""
+        """``until_done`` runs a trial on past a stack, until the policy stops it or the
+        task's last step, and clears the arm away on that step."""
         self._until_done = until_done
+        self._max_steps = None
+        self._t = 0
         # One env steps faster on the CPU, where a joint write also lands without a flush.
         self._env = gym.make(ENV_ID, num_envs=1, obs_mode="rgb", sim_backend="physx_cpu").unwrapped
         self._q = None
@@ -280,21 +286,28 @@ class SimEmbodiment(EmbodimentBase):
             environment_id=ENV_ID,
         )
 
+    def bind_task(self, envelope):
+        self._max_steps = envelope.max_steps
+
     def reset(self, scene: Scene, *, seed: int | None = None) -> Observation:
         layout = scene.metadata
         q = np.array([layout["start"]], np.float64)
+        # The scene is rebuilt each trial: PhysX keeps contact state that a reset in place
+        # carries over, so a trial would otherwise depend on how the one before it ended.
         obs, _ = self._env.reset(
             options={
+                "reconfigure": True,
                 "layout": {
                     "xy": np.array([[p[:2] for p in layout["positions"]]], np.float32),
                     "yaw": np.array([layout["yaws"]], np.float32),
                     "held": np.array([BLOCK_NAMES.index(layout["held"])]),
                     "target": np.array([BLOCK_NAMES.index(layout["target"])]),
                     "qpos": q.astype(np.float32),
-                }
+                },
             }
         )
         self._q = q
+        self._t = 0
         self._instruction = scene.instruction
         return self._observation(obs)
 
@@ -307,9 +320,16 @@ class SimEmbodiment(EmbodimentBase):
         if not refused:
             self._q, _ = solve(target)
         command = torch.as_tensor(self._q, dtype=torch.float32, device=self._env.device)
-        settling = self._until_done and action.meta.get("request_stop")
+        self._t += 1
+        last = action.meta.get("request_stop") or self._t == self._max_steps
+        settling = self._until_done and last
         for _ in range(SETTLE_STEPS if settling else 1):
             obs, _, _, _, info = self._env.step(command)
+        # The default trial's success, from before the arm is cleared away, and whether
+        # the block is out of the jaws then, as a stack must be to stand on its own.
+        stacked, released = bool(info["stacked"][0]), bool(info["success"][0])
+        if settling:
+            obs, info = self.clear_arm()
         success = bool(info["success"][0])
         terminated = success and not self._until_done
         return StepResult(
@@ -319,13 +339,25 @@ class SimEmbodiment(EmbodimentBase):
             termination_reason="success" if terminated else None,
             info={
                 "success": success,
-                "standing": bool(info["standing"][0]),
-                "stacked": bool(info["stacked"][0]),
+                "standing": released and bool(info["standing"][0]),
+                "stacked": stacked,
                 "lifted": bool(info["lifted"][0]),
                 "grasped": bool(info["grasped"][0]),
                 "refused": refused,
             },
         )
+
+    def clear_arm(self):
+        """Move the arm to CLEAR_QPOS and let the blocks settle for SETTLE_STEPS, so a stack
+        is left standing on its own or falls. The move is a teleport, so the arm leaves
+        without sweeping through the blocks."""
+        self._q = CLEAR_QPOS
+        command = torch.as_tensor(self._q, dtype=torch.float32, device=self._env.device)
+        self._env.agent.robot.set_qpos(command)
+        self._env.agent.robot.set_qvel(torch.zeros_like(command))
+        for _ in range(SETTLE_STEPS):
+            obs, _, _, _, info = self._env.step(command)
+        return obs, info
 
     def pre_check(self, waypoints):
         """``check_motion`` from where the arm is; hand it to the agent as its ``pre_check``."""

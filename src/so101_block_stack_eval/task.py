@@ -39,10 +39,10 @@ def stack(
     whether the jaws ever held the named block off the table.
 
     With ``until_done``, for an embodiment made with it, the task is
-    ``so101-block-stack-until-done`` and the trial runs until the policy stops it, its
-    stopping step settled. ``standing`` scores the stack on the last step, seated with the
-    arm touching neither block, and ``stacked`` says whether it ever held as the default
-    trial scores it.
+    ``so101-block-stack-until-done`` and the trial runs until the policy stops it or
+    ``max_steps`` runs out. The last step clears the arm away, and ``standing`` scores
+    whether the stack is still seated without it. ``stacked`` says whether the stack
+    ever held as the default trial scores it.
     """
     path = Path(layouts) if layouts else LAYOUTS
     with path.open() as file:

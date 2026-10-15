@@ -6,6 +6,7 @@ import pytest
 import torch
 from inspect_robots import eval as ir_eval
 from inspect_robots.logging.sink import NullSink
+from inspect_robots.task import TaskEnvelope
 from inspect_robots.types import Action
 from inspect_robots_agent import LLMAgentPolicy, ToolError
 
@@ -224,6 +225,33 @@ def test_a_refused_step_holds_the_last_target(embodiment, scene):
     result = embodiment.step(Action(data=HIGH))
     assert result.info["refused"]
     assert (embodiment._q == held).all()
+
+
+@pytest.mark.parametrize("stop", [False, True])
+def test_an_until_done_trial_clears_the_arm_on_its_last_step(scene, stop):
+    emb = SimEmbodiment(until_done=True)
+    try:
+        emb.bind_task(TaskEnvelope("so101-block-stack-until-done", max_steps=3))
+        emb.reset(scene)
+        hold = Action(data=HIGH)
+        emb.step(hold)
+
+        def cleared():
+            links = emb._env.agent.robot.links_map
+            column = ("upper_arm_link", "lower_arm_link", "wrist_link", "gripper_frame_link")
+            x = [float(links[name].pose.p[0, 0]) for name in column]
+            return max(x) - min(x) < 0.001
+
+        # A policy's stop ends the trial early; otherwise the third step is the last.
+        if stop:
+            emb.step(Action(data=HIGH, meta={"request_stop": True}))
+        else:
+            emb.step(hold)
+            assert not cleared()
+            emb.step(hold)
+        assert cleared()
+    finally:
+        emb.close()
 
 
 class _Records(NullSink):
