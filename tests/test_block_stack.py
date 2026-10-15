@@ -11,6 +11,7 @@ from inspect_robots.types import Action
 from inspect_robots_agent import LLMAgentPolicy, ToolError
 
 from so101_block_stack_eval.embodiment import (
+    CLEAR_QPOS,
     HIGH,
     LABELS,
     MAX_STEP,
@@ -237,10 +238,7 @@ def test_an_until_done_trial_clears_the_arm_on_its_last_step(scene, stop):
         emb.step(hold)
 
         def cleared():
-            links = emb._env.agent.robot.links_map
-            column = ("upper_arm_link", "lower_arm_link", "wrist_link", "gripper_frame_link")
-            x = [float(links[name].pose.p[0, 0]) for name in column]
-            return max(x) - min(x) < 0.001
+            return np.allclose(emb._env.agent.robot.get_qpos().numpy(), CLEAR_QPOS, atol=1e-3)
 
         # A policy's stop ends the trial early; otherwise the third step is the last.
         if stop:

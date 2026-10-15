@@ -63,10 +63,9 @@ MAX_STEP = (0.005, 0.005, 0.005, 0.05, 0.05, 0.1)
 # Under until_done, a trial's last step holds the arm a second, then moves it to
 # CLEAR_QPOS and waits another, so the stack is scored standing on its own.
 SETTLE_STEPS = 10
-# The arm pointing straight up, every link in one vertical column 69 mm in front of the
-# base and clear of any place a block can reach. The description's zero pose leans the
-# upper arm and folds the forearm, so these are the angles that make each link vertical.
-CLEAR_QPOS = np.array([[0.0, -0.2438, -1.2885, -0.0368, 0.0, GRIPPER_OPEN]])
+# The arm pointing straight up, every link within 100 mm of the base and clear of any
+# place a block can reach.
+CLEAR_QPOS = np.array([[0.0, 0.0, -np.pi / 2, 0.0, 0.0, GRIPPER_OPEN]])
 
 # The most any joint may move in one step, as on the hardware.
 MAX_JOINT_STEP = math.radians(10.0)
