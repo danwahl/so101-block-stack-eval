@@ -1,6 +1,6 @@
 """Score an LLM agent on the block stack in sim.
 
-    python scripts/run.py z-ai/glm-5.3-flash
+    python scripts/run.py z-ai/glm-5.3-flash --until-done
 
 The CLI runs the same thing (`inspect-robots run --task so101-block-stack --policy agent
 --embodiment so101_sim -P model=...`) but cannot pass the agent callables: the reach check,
@@ -15,10 +15,10 @@ Physics runs on the CPU; only the cameras render on the GPU. To keep a run off t
 hide it and render with Mesa's software Vulkan, at about 0.1 s a step:
 
     CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json \
-        python scripts/run.py z-ai/glm-5.3-flash
+        python scripts/run.py z-ai/glm-5.3-flash --until-done
 
-Logs go to outputs/<provider>/<model>/. The leaderboard counts runs over the first 50
-layouts, the default.
+Logs go to outputs/<provider>/<model>/. The leaderboard counts --until-done runs over the
+first 50 layouts, the default.
 """
 
 import argparse

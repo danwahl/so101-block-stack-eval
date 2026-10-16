@@ -1,12 +1,12 @@
 {
- "name": "so101-block-stack",
+ "name": "so101-block-stack-until-done",
  "columns": [
   {
-   "key": "stacked",
+   "key": "standing",
    "label": "Stacked",
    "better": "higher",
    "format": "pct",
-   "description": "Layouts where the named block ends stacked"
+   "description": "Layouts where the stack stands once the arm is cleared away"
   },
   {
    "key": "lifted",
@@ -59,10 +59,10 @@
    "name": "deepseek-v4.1-flash",
    "kind": "model",
    "scores": {
-    "stacked": {
-     "value": 0.7,
-     "lo": 0.58,
-     "hi": 0.82
+    "standing": {
+     "value": 0.3,
+     "lo": 0.18,
+     "hi": 0.42049999999999954
     },
     "lifted": {
      "value": 0.9,
@@ -70,29 +70,29 @@
      "hi": 0.98
     },
     "cost": {
-     "value": 0.06544033524800001,
-     "lo": 0.0482464250882,
-     "hi": 0.08245709827179998
+     "value": 0.082053115544,
+     "lo": 0.06781855336539999,
+     "hi": 0.0976707645015
     },
     "calls": {
-     "value": 49.34,
-     "lo": 41.87800000000001,
-     "hi": 56.8005
+     "value": 61.88,
+     "lo": 55.4995,
+     "hi": 68.12
     },
     "tokens_in": {
-     "value": 544809.76,
-     "lo": 417179.5165,
-     "hi": 677999.653
+     "value": 723513.72,
+     "lo": 606358.0945,
+     "hi": 848615.4935
     },
     "tokens_out": {
-     "value": 67682.02,
-     "lo": 52227.116,
-     "hi": 83003.579
+     "value": 76012.32,
+     "lo": 63320.8835,
+     "hi": 89936.2365
     },
     "minutes": {
-     "value": 10.173133800903955,
-     "lo": 7.659117149498065,
-     "hi": 12.91776846509377
+     "value": 8.22877533340454,
+     "lo": 6.563818119198085,
+     "hi": 10.176058207744358
     }
    },
    "info": {
@@ -103,40 +103,40 @@
    "name": "glm-5.3-flash",
    "kind": "model",
    "scores": {
-    "stacked": {
-     "value": 0.4,
-     "lo": 0.26,
-     "hi": 0.54
+    "standing": {
+     "value": 0.24,
+     "lo": 0.12,
+     "hi": 0.36
     },
     "lifted": {
-     "value": 0.64,
-     "lo": 0.5195000000000005,
-     "hi": 0.78
+     "value": 0.7,
+     "lo": 0.58,
+     "hi": 0.82
     },
     "cost": {
-     "value": 0.030404225339999997,
-     "lo": 0.0234864970755,
-     "hi": 0.037825779944499996
+     "value": 0.03911766075,
+     "lo": 0.0300025864607,
+     "hi": 0.04930268183555
     },
     "calls": {
-     "value": 48.84,
-     "lo": 40.379000000000005,
-     "hi": 57.120999999999995
+     "value": 50.2,
+     "lo": 42.4,
+     "hi": 57.6855
     },
     "tokens_in": {
-     "value": 468391.94,
-     "lo": 358502.37450000003,
-     "hi": 579741.7115
+     "value": 475918.6,
+     "lo": 376361.2515,
+     "hi": 578306.88
     },
     "tokens_out": {
-     "value": 6824.74,
-     "lo": 5573.5995,
-     "hi": 8050.262
+     "value": 7002.3,
+     "lo": 5860.795000000001,
+     "hi": 8240.512
     },
     "minutes": {
-     "value": 2.840899093310038,
-     "lo": 2.1328922807117303,
-     "hi": 3.6185470884919155
+     "value": 2.0868290885289507,
+     "lo": 1.6441698789576689,
+     "hi": 2.533948498580853
     }
    },
    "info": {
@@ -147,10 +147,10 @@
    "name": "gpt-6-luna",
    "kind": "model",
    "scores": {
-    "stacked": {
-     "value": 0.22,
-     "lo": 0.12,
-     "hi": 0.34
+    "standing": {
+     "value": 0.16,
+     "lo": 0.06,
+     "hi": 0.26
     },
     "lifted": {
      "value": 0.34,
@@ -158,29 +158,29 @@
      "hi": 0.48
     },
     "cost": {
-     "value": 0.0105811025,
-     "lo": 0.0067100144624999995,
-     "hi": 0.015535916835
+     "value": 0.010555728000000002,
+     "lo": 0.008166024595,
+     "hi": 0.013428447077499999
     },
     "calls": {
-     "value": 21.06,
-     "lo": 17.1985,
-     "hi": 25.121
+     "value": 23.5,
+     "lo": 19.979000000000003,
+     "hi": 27.6405
     },
     "tokens_in": {
-     "value": 118672.4,
-     "lo": 82365.6035,
-     "hi": 160122.84149999998
+     "value": 127303.86,
+     "lo": 100403.0705,
+     "hi": 158643.13
     },
     "tokens_out": {
-     "value": 3125.42,
-     "lo": 1500.941,
-     "hi": 6028.6314999999995
+     "value": 2051.92,
+     "lo": 1754.8215,
+     "hi": 2394.8265
     },
     "minutes": {
-     "value": 1.062611622651418,
-     "lo": 0.7695784257451694,
-     "hi": 1.4616571837683519
+     "value": 1.4961288495858511,
+     "lo": 1.26279573452274,
+     "hi": 1.7884148646414277
     }
    },
    "info": {
@@ -191,5 +191,5 @@
  "notes": [
   "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`."
  ],
- "updated": "2026-10-14"
+ "updated": "2026-10-15"
 }

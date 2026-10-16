@@ -1,9 +1,10 @@
 """Animate a trial as a WebP by replaying its logged actions through the sim.
 
-    python scripts/render.py outputs/openai/gpt-6-luna/so101-block-stack_*.json layout-000
+    python scripts/render.py outputs/openai/gpt-6-luna/*-until-done_*.json layout-000
 
 The sim is deterministic, so a log's actions reproduce the trial without storing frames.
-Each frame is the top camera, at half size, every second step: twice real time.
+An until-done trial's last frame is the arm cleared away.
+Each frame is the top camera, at half size, every second step and the last: twice real time.
 """
 
 import argparse
@@ -30,11 +31,11 @@ def frames(embodiment, sample, actions_path):
     )
     yield embodiment.reset(scene).images["top"]
     with actions_path.open() as file:
-        for line in file:
-            record = json.loads(line)
-            if "action" in record:
-                action = Action(data=np.asarray(record["action"], np.float64))
-                yield embodiment.step(action).observation.images["top"]
+        actions = [json.loads(line)["action"] for line in file if '"action"' in line]
+    for t, action in enumerate(actions):
+        meta = {"request_stop": True} if t == len(actions) - 1 else {}
+        action = Action(data=np.asarray(action, np.float64), meta=meta)
+        yield embodiment.step(action).observation.images["top"]
 
 
 def main():
@@ -51,13 +52,15 @@ def main():
     model = log["eval"]["policy_config"]["model"].split("/")[-1]
     out = args.out or Path("images") / f"{model}-{args.scene}.webp"
 
-    embodiment = SimEmbodiment()
+    embodiment = SimEmbodiment(until_done=log["eval"]["task"].endswith("-until-done"))
     try:
-        images = [
-            Image.fromarray(np.asarray(image)).resize((SIZE, SIZE), Image.LANCZOS)
-            for i, image in enumerate(frames(embodiment, sample, actions))
-            if i % STRIDE == 0
-        ]
+        images, last = [], None
+        for i, image in enumerate(frames(embodiment, sample, actions)):
+            last = Image.fromarray(np.asarray(image)).resize((SIZE, SIZE), Image.LANCZOS)
+            if i % STRIDE == 0:
+                images.append(last)
+        if images[-1] is not last:
+            images.append(last)
     finally:
         embodiment.close()
     out.parent.mkdir(parents=True, exist_ok=True)

@@ -5,9 +5,10 @@
 This follows Inspect AI's ``eval_retry``. The task and policy are rebuilt as run.py
 builds them from what the log recorded, and the retry refuses to start if their scenes,
 horizon, epochs or policy config differ from the log's, or to finish if the embodiment
-does. Scenes logged as succeeded are kept as logged; any other scene runs again, every
-epoch of it, under the seed it had. The retry's own log of those scenes is written as
-eval() writes it, then the combined log beside it, and the original is left as it was.
+does. Scenes logged as succeeded are kept as logged, as is any errored scene named with
+``--keep``; any other scene runs again, every epoch of it, under the seed it had. The
+retry's own log of those scenes is written as eval() writes it, then the combined log
+beside it, and the original is left as it was.
 
 The combined log's ``eval`` block is the retry's, saying when and from which commit it
 ran. Its ``stats`` add up both runs, the discarded trials' steps included, with latency
@@ -90,6 +91,9 @@ def merge(old: EvalLog, new: EvalLog) -> EvalLog:
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("log", type=Path, help="an Inspect Robots eval log")
+    parser.add_argument(
+        "--keep", action="append", default=[], help="an errored scene to keep as logged"
+    )
     args = parser.parse_args()
 
     old = read_eval_log(str(args.log))
@@ -100,6 +104,9 @@ def main():
     if old.status != "success" and old.error != finished:
         raise SystemExit(f"{args.log}: the run did not finish ({old.status}: {old.error})")
     errored = {sample.scene_id for sample in old.samples if sample.status != "success"}
+    if not errored >= set(args.keep):
+        raise SystemExit(f"{args.log}: not errored: {sorted(set(args.keep) - errored)}")
+    errored -= set(args.keep)
     if not errored:
         print(f"{args.log}: every scene succeeded")
         return

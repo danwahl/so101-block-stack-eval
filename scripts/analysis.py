@@ -2,9 +2,10 @@
 
     python scripts/analysis.py
 
-Each model's latest complete run over the first EPISODES layouts counts, one trial per
-layout, through OpenRouter's chat API at low reasoning effort. A trial that ended in an
-error, such as three failed turns in a row, counts as neither stacked nor lifted. The 95%
+Each model's latest complete run of the until-done task over the first EPISODES layouts
+counts, one trial per layout, through OpenRouter's chat API at low reasoning effort. A
+trial counts as stacked if its ``standing`` score holds. A trial that ended in an error,
+such as three failed turns in a row, counts as neither stacked nor lifted. The 95%
 bootstrap intervals resample layouts. Every counted trial must have seen the same system
 prompt and tool schemas; their hash is the prompt version, written to results.json and
 the README with the leaderboard.
@@ -18,13 +19,19 @@ from pathlib import Path
 import pandas as pd
 from evalib import Column, Leaderboard, bootstrap, provider, update_readme
 
-TASK = "so101-block-stack"
+TASK = "so101-block-stack-until-done"
 EPISODES = 50
 LAYOUTS = [f"layout-{i:03d}" for i in range(EPISODES)]
 OPENROUTER = "https://openrouter.ai/api/v1"
 
 COLUMNS = [
-    Column("stacked", "Stacked", "higher", "pct", "Layouts where the named block ends stacked"),
+    Column(
+        "standing",
+        "Stacked",
+        "higher",
+        "pct",
+        "Layouts where the stack stands once the arm is cleared away",
+    ),
     Column(
         "lifted",
         "Lifted",
@@ -112,7 +119,7 @@ def load_trials(root: Path) -> pd.DataFrame:
                         "run": path.stem,
                         "layout": sample["scene_id"],
                         "epoch": epoch,
-                        "stacked": scores.get("success_at_end", 0.0),
+                        "standing": scores.get("standing", 0.0),
                         "lifted": scores.get("lifted", 0.0),
                         "errored": float(not scores),
                         **trial_usage(path.parent, trial),
