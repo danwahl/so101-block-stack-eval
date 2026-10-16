@@ -4,7 +4,7 @@
 
 The sim is deterministic, so a log's actions reproduce the trial without storing frames.
 An until-done trial is shown up to the agent's last action, without the arm cleared away.
-Each frame is the top camera, at half size, one per step: real time.
+Each frame is the top camera, at half size, one per step.
 """
 
 import argparse

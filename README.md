@@ -16,7 +16,7 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 <!-- leaderboard:end -->
 
-Each model on layout 42, "stack the red block on the green block", from the top camera in real time:
+Each model on layout 42, "stack the red block on the green block", from the top camera:
 
 | gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash |
 |:-:|:-:|:-:|
