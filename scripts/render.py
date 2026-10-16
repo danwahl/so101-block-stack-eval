@@ -3,7 +3,7 @@
     python scripts/render.py outputs/openai/gpt-6-luna/*-until-done_*.json layout-000
 
 The sim is deterministic, so a log's actions reproduce the trial without storing frames.
-An until-done trial's last frame is the arm cleared away.
+An until-done trial is shown up to the agent's last action, without the arm cleared away.
 Each frame is the top camera, at half size, every second step and the last: twice real time.
 """
 
@@ -31,11 +31,11 @@ def frames(embodiment, sample, actions_path):
     )
     yield embodiment.reset(scene).images["top"]
     with actions_path.open() as file:
-        actions = [json.loads(line)["action"] for line in file if '"action"' in line]
-    for t, action in enumerate(actions):
-        meta = {"request_stop": True} if t == len(actions) - 1 else {}
-        action = Action(data=np.asarray(action, np.float64), meta=meta)
-        yield embodiment.step(action).observation.images["top"]
+        for line in file:
+            record = json.loads(line)
+            if "action" in record:
+                action = Action(data=np.asarray(record["action"], np.float64))
+                yield embodiment.step(action).observation.images["top"]
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
     model = log["eval"]["policy_config"]["model"].split("/")[-1]
     out = args.out or Path("images") / f"{model}-{args.scene}.webp"
 
-    embodiment = SimEmbodiment(until_done=log["eval"]["task"].endswith("-until-done"))
+    embodiment = SimEmbodiment()
     try:
         images, last = [], None
         for i, image in enumerate(frames(embodiment, sample, actions)):
