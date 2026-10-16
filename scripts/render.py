@@ -4,7 +4,7 @@
 
 The sim is deterministic, so a log's actions reproduce the trial without storing frames.
 An until-done trial is shown up to the agent's last action, without the arm cleared away.
-Each frame is the top camera, at half size, every second step and the last: twice real time.
+Each frame is the top camera, at half size, one per step: real time.
 """
 
 import argparse
@@ -18,7 +18,6 @@ from PIL import Image
 
 from so101_block_stack_eval.embodiment import SimEmbodiment
 
-STRIDE = 2
 SIZE = 240
 FRAME_MS = 100
 HOLD_MS = 1500
@@ -54,13 +53,10 @@ def main():
 
     embodiment = SimEmbodiment()
     try:
-        images, last = [], None
-        for i, image in enumerate(frames(embodiment, sample, actions)):
-            last = Image.fromarray(np.asarray(image)).resize((SIZE, SIZE), Image.LANCZOS)
-            if i % STRIDE == 0:
-                images.append(last)
-        if images[-1] is not last:
-            images.append(last)
+        images = [
+            Image.fromarray(np.asarray(image)).resize((SIZE, SIZE), Image.LANCZOS)
+            for image in frames(embodiment, sample, actions)
+        ]
     finally:
         embodiment.close()
     out.parent.mkdir(parents=True, exist_ok=True)

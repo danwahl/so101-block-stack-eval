@@ -16,7 +16,7 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 <!-- leaderboard:end -->
 
-Each model on layout 42, "stack the red block on the green block", from the top camera at twice real time:
+Each model on layout 42, "stack the red block on the green block", from the top camera in real time:
 
 | gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash |
 |:-:|:-:|:-:|
@@ -68,15 +68,3 @@ uv run pytest
 ## License
 
 Apache 2.0. The arm's description in `src/so101_block_stack_eval/description/` is adapted from the SO-101 in [TheRobotStudio's SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), under the same license.
-
-## Citation
-
-```bibtex
-@misc{wahl2026so101blockstackeval,
-  title = {{so101-block-stack-eval: LLM agents stacking blocks with a simulated SO-101 arm}},
-  author = {Wahl, Dan},
-  year = {2026},
-  url = {https://github.com/danwahl/so101-block-stack-eval},
-  note = {Version 0.1.0}
-}
-```
