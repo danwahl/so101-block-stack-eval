@@ -7,9 +7,11 @@ The CLI runs the same thing (`inspect-robots run --task so101-block-stack --poli
 without which a move out of reach stalls the arm instead of returning a reason, and the
 locate_points tool.
 
-Models are named as OpenRouter names them, and every run goes through OpenRouter with
+Models are named as OpenRouter names them, and runs go through OpenRouter with
 OPENROUTER_API_KEY, so each model is sent the same request format and each call reports
-its cost.
+its cost. Anthropic's models, named as Anthropic names them (anthropic/claude-haiku-5-5),
+go instead to Anthropic's Messages API with ANTHROPIC_API_KEY, and analysis.py prices
+their calls from the tokens.
 
 Physics runs on the CPU; only the cameras render on the GPU. To keep a run off the GPU,
 hide it and render with Mesa's software Vulkan, at about 0.1 s a step:
@@ -30,13 +32,22 @@ from so101_block_stack_eval.embodiment import LOCATE_POINTS, SimEmbodiment
 from so101_block_stack_eval.task import stack
 
 OPENROUTER = "https://openrouter.ai/api/v1"
+ANTHROPIC = "https://api.anthropic.com/v1"
 
 
 def agent(model, embodiment, *, max_llm_calls=100, effort="low", locate=True):
     """The LLM agent, its moves checked against ``embodiment``'s reach."""
+    if model.startswith("anthropic/"):
+        route = {
+            "model": model.removeprefix("anthropic/"),
+            "base_url": ANTHROPIC,
+            "api_key_env": "ANTHROPIC_API_KEY",
+            "wire": "messages",
+        }
+    else:
+        route = {"model": model, "base_url": OPENROUTER}
     return LLMAgentPolicy(
-        model=model,
-        base_url=OPENROUTER,
+        **route,
         max_llm_calls=max_llm_calls,
         pre_check=embodiment.pre_check,
         tools=(LOCATE_POINTS,) if locate else (),

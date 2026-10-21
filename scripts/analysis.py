@@ -3,12 +3,13 @@
     python scripts/analysis.py
 
 Each model's latest complete run of the until-done task over the first EPISODES layouts
-counts, one trial per layout, through OpenRouter's chat API at low reasoning effort. A
-trial counts as stacked if its ``standing`` score holds. A trial that ended in an error,
-such as three failed turns in a row, counts as neither stacked nor lifted. The 95%
-bootstrap intervals resample layouts. Every counted trial must have seen the same system
-prompt and tool schemas; their hash is the prompt version, written to results.json and
-the README with the leaderboard.
+counts, one trial per layout, at low reasoning effort through OpenRouter's chat API, or
+Anthropic's Messages API for Anthropic's models. OpenRouter reports each call's cost;
+Anthropic's calls are priced from their tokens at PRICES. A trial counts as stacked if its
+``standing`` score holds. A trial that ended in an error, such as three failed turns in a
+row, counts as neither stacked nor lifted. The 95% bootstrap intervals resample layouts.
+Every counted trial must have seen the same system prompt and tool schemas; their hash is
+the prompt version, written to results.json and the README with the leaderboard.
 """
 
 import argparse
@@ -23,6 +24,18 @@ TASK = "so101-block-stack-until-done"
 EPISODES = 50
 LAYOUTS = [f"layout-{i:03d}" for i in range(EPISODES)]
 OPENROUTER = "https://openrouter.ai/api/v1"
+ANTHROPIC = "https://api.anthropic.com/v1"
+ROUTES = {(OPENROUTER, "chat"), (ANTHROPIC, "messages")}
+# US dollars per million tokens of input, 5-minute cache writes, cache hits and output, from
+# https://platform.claude.com/docs/en/about-claude/pricing. Claude Haiku 5.5 costs more for
+# a call whose prompt is over 100,000 tokens.
+PRICES = {
+    "claude-fable-5-1": (10.0, 12.5, 0.25, 50.0),
+    "claude-opus-5-5": (4.0, 5.0, 0.2, 20.0),
+    "claude-sonnet-5-5": (2.0, 2.5, 0.1, 10.0),
+    "claude-haiku-5-5": (0.1, 0.125, 0.01, 0.5),
+}
+LONG_PRICES = {"claude-haiku-5-5": (100_000, (0.5, 0.625, 0.05, 2.5))}
 
 COLUMNS = [
     Column(
@@ -53,6 +66,14 @@ COLUMNS = [
 ]
 
 
+def model_id(config: dict) -> str:
+    """The provider/model name a run was given, from its logged policy config: the agent
+    plugin logs an Anthropic model without its provider."""
+    if config["base_url"] == ANTHROPIC:
+        return f"anthropic/{config['model']}"
+    return config["model"]
+
+
 def latest_runs(root: Path):
     """Each model's latest complete run over the first EPISODES layouts, with its path."""
     runs = {}
@@ -63,13 +84,13 @@ def latest_runs(root: Path):
         spec, config = log["eval"], log["eval"]["policy_config"]
         if spec["task"] != TASK or log["status"] != "success":
             continue
-        if (config["base_url"], config["wire"], config["effort"]) != (OPENROUTER, "chat", "low"):
+        if (config["base_url"], config["wire"]) not in ROUTES or config["effort"] != "low":
             continue
         if sorted(s["scene_id"] for s in log["samples"]) != LAYOUTS:
             continue
         if any(len(s["trial_metadata"]) != 1 for s in log["samples"]):
             continue
-        model = config["model"]
+        model = model_id(config)
         if model not in runs or spec["created"] > runs[model][1]["eval"]["created"]:
             runs[model] = (path, log)
     return runs.values()
@@ -81,12 +102,56 @@ def fingerprint(directory: Path, trial: dict) -> str | None:
         return None
     with (directory / trial["wire_capture"]).open() as file:
         request = json.loads(file.readline())["request"]
-    system = next(m["content"] for m in request["messages"] if m["role"] == "system")
-    text = json.dumps({"system": system, "tools": request["tools"]}, sort_keys=True)
+    if "system" in request:
+        # The Messages API's shape, put back in the chat API's so both hash alike.
+        system = request["system"][0]["text"]
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": tool["name"],
+                    "description": tool["description"],
+                    "parameters": tool["input_schema"],
+                },
+            }
+            for tool in request["tools"]
+        ]
+    else:
+        system = next(m["content"] for m in request["messages"] if m["role"] == "system")
+        tools = request["tools"]
+    text = json.dumps({"system": system, "tools": tools}, sort_keys=True)
     return hashlib.sha256(text.encode()).hexdigest()[:12]
 
 
-def trial_usage(directory: Path, trial: dict) -> dict[str, float]:
+def call_usage(model: str, call: dict) -> tuple[float, int, int]:
+    """One call's cost in US dollars and its prompt and completion tokens."""
+    reported = (call.get("response") or {}).get("usage") or {}
+    if call.get("endpoint") != "/messages":
+        return (
+            reported.get("cost", 0.0),
+            reported.get("prompt_tokens", 0),
+            reported.get("completion_tokens", 0),
+        )
+    tokens = [
+        reported.get(key, 0)
+        for key in (
+            "input_tokens",
+            "cache_creation_input_tokens",
+            "cache_read_input_tokens",
+            "output_tokens",
+        )
+    ]
+    if model not in PRICES:
+        raise SystemExit(f"no price for {model}: add it to PRICES")
+    prices = PRICES[model]
+    threshold, long_prices = LONG_PRICES.get(model, (None, None))
+    if threshold is not None and sum(tokens[:3]) > threshold:
+        prices = long_prices
+    cost = sum(n * price for n, price in zip(tokens, prices, strict=True)) / 1e6
+    return cost, sum(tokens[:3]), tokens[3]
+
+
+def trial_usage(directory: Path, trial: dict, model: str) -> dict[str, float]:
     """The trial's model calls, tokens, cost and model time, from its wire log."""
     usage = {"cost": 0.0, "calls": 0, "tokens_in": 0, "tokens_out": 0, "minutes": 0.0}
     if "wire_capture" not in trial:
@@ -94,11 +159,11 @@ def trial_usage(directory: Path, trial: dict) -> dict[str, float]:
     with (directory / trial["wire_capture"]).open() as file:
         for line in file:
             call = json.loads(line)
-            reported = (call.get("response") or {}).get("usage") or {}
-            usage["cost"] += reported.get("cost", 0.0)
+            cost, tokens_in, tokens_out = call_usage(model, call)
+            usage["cost"] += cost
             usage["calls"] += 1
-            usage["tokens_in"] += reported.get("prompt_tokens", 0)
-            usage["tokens_out"] += reported.get("completion_tokens", 0)
+            usage["tokens_in"] += tokens_in
+            usage["tokens_out"] += tokens_out
             usage["minutes"] += call["duration_s"] / 60
     return usage
 
@@ -107,7 +172,7 @@ def load_trials(root: Path) -> pd.DataFrame:
     """One row per trial of every counted run."""
     rows = []
     for path, log in latest_runs(root):
-        model = log["eval"]["policy_config"]["model"]
+        model = model_id(log["eval"]["policy_config"])
         for sample in log["samples"]:
             for epoch, (scores, trial) in enumerate(
                 zip(sample["epochs"], sample["trial_metadata"], strict=True)
@@ -122,7 +187,7 @@ def load_trials(root: Path) -> pd.DataFrame:
                         "standing": scores.get("standing", 0.0),
                         "lifted": scores.get("lifted", 0.0),
                         "errored": float(not scores),
-                        **trial_usage(path.parent, trial),
+                        **trial_usage(path.parent, trial, model.split("/")[-1]),
                         "prompt": fingerprint(path.parent, trial),
                     }
                 )

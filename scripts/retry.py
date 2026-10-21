@@ -21,6 +21,7 @@ import json
 from pathlib import Path
 from statistics import mean
 
+from analysis import model_id
 from inspect_robots import eval as ir_eval
 from inspect_robots.log import EvalLog, EvalResults, EvalStats, read_eval_log
 from inspect_robots.logging import JsonLogSink
@@ -125,7 +126,7 @@ def main():
     embodiment = SimEmbodiment(until_done=until_done)
     try:
         policy = agent(
-            config["model"],
+            model_id(config),
             embodiment,
             max_llm_calls=config["max_llm_calls"],
             effort=config["effort"],

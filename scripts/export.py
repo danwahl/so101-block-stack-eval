@@ -13,7 +13,7 @@ import argparse
 import shutil
 from pathlib import Path
 
-from analysis import latest_runs, load_trials
+from analysis import latest_runs, load_trials, model_id
 
 CARD = """\
 ---
@@ -54,7 +54,7 @@ def main():
     shutil.rmtree(args.out / "logs", ignore_errors=True)
     for path, log in latest_runs(args.logs):
         run = path.parent
-        target = args.out / "logs" / log["eval"]["policy_config"]["model"]
+        target = args.out / "logs" / model_id(log["eval"]["policy_config"])
         target.mkdir(parents=True)
         shutil.copy2(path, target / path.name)
         for trial in trials(log):

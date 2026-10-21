@@ -2,14 +2,14 @@
 name: run-model
 description: Run the block stack on a model, retry any errored trials, regenerate the leaderboard, and suggest a commit
 disable-model-invocation: true
-argument-hint: [openrouter-model-id]
+argument-hint: [openrouter-or-anthropic-model-id]
 ---
 
 # Run Model Evaluation
 
 Run the until-done block stack for a model and update the leaderboard.
 
-The argument is an OpenRouter model ID (e.g. `z-ai/glm-5.3-flash`). Logs go to `outputs/<provider>/<model>/`. Every command that builds the sim takes the prefix `CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json`, which keeps it on the CPU.
+The argument is an OpenRouter model ID (e.g. `z-ai/glm-5.3-flash`), or an Anthropic model ID with an `anthropic/` prefix (e.g. `anthropic/claude-haiku-5-5`), which runs on Anthropic's own API. Logs go to `outputs/<provider>/<model>/`. Every command that builds the sim takes the prefix `CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json`, which keeps it on the CPU.
 
 ## Steps
 
@@ -24,6 +24,8 @@ curl -s https://openrouter.ai/api/v1/credits -H "Authorization: Bearer $OPENROUT
 
 The remaining balance is `data.total_credits - data.total_usage`. A trial has cost between $0.01 and $0.08, so 50 layouts need up to about $4, and runs in parallel draw on the same balance. Every call reserves the model's full output limit, so a low balance refuses calls (HTTP 402) before it is spent, and each refused call errors a trial. If the balance looks short, tell the user before starting.
 
+For an `anthropic/` model, `scripts/run.py` reads `ANTHROPIC_API_KEY` instead, also from `.env`. Anthropic has no balance endpoint for an API key, so tell the user the estimate rather than checking it: a trial on Claude Haiku 5.5 has cost about $0.01, and the larger models cost more in proportion to their prices in `PRICES` in `scripts/analysis.py`. A model missing from `PRICES` stops `scripts/analysis.py`, so add its prices from Anthropic's pricing page before running it.
+
 ### 2. Run the evaluation
 
 ```bash
@@ -37,8 +39,8 @@ Run it in the background, with `.env` loaded as in step 1. It takes one and a ha
 
 If any trial errored, list the errored samples in the log (`status` other than `"success"`) with their `error`:
 
-- From the service, to rerun: `LLM request rejected — HTTP 402` (credits), and `LLM request failed after 3 attempts` (rate limits, server errors, timeouts).
-- From the model, to keep: `LLM tool calls kept failing` and `LLM produced no tool call in 3 consecutive turns`.
+- From the service, to rerun: `LLM request rejected — HTTP 402` (OpenRouter credits), `LLM request rejected — HTTP 400` naming a low credit balance (Anthropic credits), and `LLM request failed after 3 attempts` (rate limits, server errors, timeouts).
+- From the model, to keep: `LLM tool calls kept failing`, `LLM produced no tool call in 3 consecutive turns`, and `LLM refused the request`.
 
 Show any other error to the user rather than guessing. Rerun the service errors and keep the model's, so no model gets a second attempt:
 

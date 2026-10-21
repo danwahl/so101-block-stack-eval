@@ -45,11 +45,11 @@ A trial succeeds on the first step the named block sits on its target, out of th
 
 ```
 uv sync
-export OPENROUTER_API_KEY=...
+export OPENROUTER_API_KEY=...  # or ANTHROPIC_API_KEY for anthropic/claude-* models
 uv run python scripts/run.py z-ai/glm-5.3-flash --until-done
 ```
 
-`scripts/run.py` passes the agent two things the `inspect-robots run` CLI cannot: `SimEmbodiment.pre_check`, which gives the reason a motion would be refused, and `LOCATE_POINTS`, a custom tool that maps top-camera pixels to base-frame points on a horizontal plane. Every model goes through OpenRouter at low reasoning effort.
+`scripts/run.py` passes the agent two things the `inspect-robots run` CLI cannot: `SimEmbodiment.pre_check`, which gives the reason a motion would be refused, and `LOCATE_POINTS`, a custom tool that maps top-camera pixels to base-frame points on a horizontal plane. Every model runs at low reasoning effort, through OpenRouter, except Anthropic's, which go to Anthropic's Messages API under the names Anthropic gives them (`anthropic/claude-haiku-5-5`).
 
 Only the cameras render on the GPU. To run without one, hide it and render with Mesa's software Vulkan:
 
