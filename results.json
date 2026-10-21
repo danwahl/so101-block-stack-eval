@@ -186,10 +186,54 @@
    "info": {
     "provider": "openai"
    }
+  },
+  {
+   "name": "nemotron-3.5-super-vl",
+   "kind": "model",
+   "scores": {
+    "standing": {
+     "value": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "lifted": {
+     "value": 0.12,
+     "lo": 0.04,
+     "hi": 0.22
+    },
+    "cost": {
+     "value": 0.0545902812,
+     "lo": 0.04519968475000001,
+     "hi": 0.06511021214500001
+    },
+    "calls": {
+     "value": 51.6,
+     "lo": 43.037,
+     "hi": 60.864
+    },
+    "tokens_in": {
+     "value": 636514.48,
+     "lo": 495357.711,
+     "hi": 792007.925
+    },
+    "tokens_out": {
+     "value": 17840.58,
+     "lo": 15322.6105,
+     "hi": 20590.396
+    },
+    "minutes": {
+     "value": 1.457367291053136,
+     "lo": 1.2174425367097057,
+     "hi": 1.7093066832304
+    }
+   },
+   "info": {
+    "provider": "nvidia"
+   }
   }
  ],
  "notes": [
   "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`."
  ],
- "updated": "2026-10-15"
+ "updated": "2026-10-21"
 }
