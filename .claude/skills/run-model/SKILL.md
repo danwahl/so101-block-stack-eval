@@ -15,9 +15,10 @@ The argument is an OpenRouter model ID (e.g. `z-ai/glm-5.3-flash`). Logs go to `
 
 ### 1. Check the OpenRouter balance
 
-`scripts/run.py` reads `OPENROUTER_API_KEY` from the environment. If it is not set, ask the user where the key is kept. Never print the key itself.
+`scripts/run.py` reads `OPENROUTER_API_KEY` from the environment, and `.env` (gitignored) holds it. Load it in each shell that runs a step, and never print the key itself.
 
 ```bash
+set -a; . ./.env; set +a
 curl -s https://openrouter.ai/api/v1/credits -H "Authorization: Bearer $OPENROUTER_API_KEY"
 ```
 
@@ -30,7 +31,7 @@ CUDA_VISIBLE_DEVICES= VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json \
     uv run python scripts/run.py $ARGUMENTS --until-done
 ```
 
-Run it in the background. It takes one and a half to eight hours, depending on the model. After a few minutes, check that `outputs/<provider>/<model>/wire/<run>/layout-000-e0/calls.jsonl` exists and its lines have `"status": 200`; a trial's actions are written only when it ends. Then wait for the run to exit. Its last line is the `EvalResults`, with `errored_trials`, and the log is the newest `so101-block-stack-until-done_*.json` in the model's directory.
+Run it in the background, with `.env` loaded as in step 1. It takes one and a half to eight hours, depending on the model. After a few minutes, check that `outputs/<provider>/<model>/wire/<run>/layout-000-e0/calls.jsonl` exists and its lines have `"status": 200`; a trial's actions are written only when it ends. Then wait for the run to exit. Its last line is the `EvalResults`, with `errored_trials`, and the log is the newest `so101-block-stack-until-done_*.json` in the model's directory.
 
 ### 3. Retry errored trials
 
