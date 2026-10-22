@@ -56,6 +56,50 @@
  },
  "rows": [
   {
+   "name": "claude-sonnet-5-5",
+   "kind": "model",
+   "scores": {
+    "standing": {
+     "value": 0.52,
+     "lo": 0.39950000000000047,
+     "hi": 0.66
+    },
+    "lifted": {
+     "value": 0.92,
+     "lo": 0.84,
+     "hi": 0.98
+    },
+    "cost": {
+     "value": 0.23371134199999996,
+     "lo": 0.17822986704999996,
+     "hi": 0.2912328782
+    },
+    "calls": {
+     "value": 29.0,
+     "lo": 23.3775,
+     "hi": 34.741
+    },
+    "tokens_in": {
+     "value": 336394.34,
+     "lo": 240106.94850000006,
+     "hi": 443340.454
+    },
+    "tokens_out": {
+     "value": 5743.24,
+     "lo": 4382.6575,
+     "hi": 7208.6505
+    },
+    "minutes": {
+     "value": 1.621804824988047,
+     "lo": 1.2625159583369892,
+     "hi": 1.9942272004763286
+    }
+   },
+   "info": {
+    "provider": "anthropic"
+   }
+  },
+  {
    "name": "claude-haiku-5-5",
    "kind": "model",
    "scores": {
@@ -279,5 +323,5 @@
  "notes": [
   "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`."
  ],
- "updated": "2026-10-21"
+ "updated": "2026-10-22"
 }
