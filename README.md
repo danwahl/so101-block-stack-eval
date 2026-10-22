@@ -8,10 +8,11 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 | # | Name | Provider | Stacked | Lifted | Cost | Calls | Tokens in | Tokens out | Minutes |
 |--:|:--|:--|--:|--:|--:|--:|--:|--:|--:|
-| 1 | deepseek-v4.1-flash | deepseek | **30% (18%–42%)** | **90%** | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
-| 2 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
-| 3 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | **24** | **127,304** | **2,052** | 1.5 |
-| 4 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | **1.5** |
+| 1 | claude-haiku-5-5 | anthropic | **34% (22%–48%)** | 86% | 0.020 | 38 | 523,773 | 10,333 | **1.3** |
+| 2 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | **90%** | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
+| 3 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
+| 4 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | **24** | **127,304** | **2,052** | 1.5 |
+| 5 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | 1.5 |
 
 50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.
 
@@ -19,10 +20,10 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 Each model on layout 42, "stack the red block on the green block", from the top camera:
 
-| gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash | nemotron-3.5-super-vl |
-|:-:|:-:|:-:|:-:|
-| ![gpt-6-luna on layout 42](images/gpt-6-luna-layout-042.webp) | ![deepseek-v4.1-flash on layout 42](images/deepseek-v4.1-flash-layout-042.webp) | ![glm-5.3-flash on layout 42](images/glm-5.3-flash-layout-042.webp) | ![nemotron-3.5-super-vl on layout 42](images/nemotron-3.5-super-vl-layout-042.webp) |
-| 83 steps | 185 steps | 82 steps | 74 steps |
+| claude-haiku-5-5 | gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash | nemotron-3.5-super-vl |
+|:-:|:-:|:-:|:-:|:-:|
+| ![claude-haiku-5-5 on layout 42](images/claude-haiku-5-5-layout-042.webp) | ![gpt-6-luna on layout 42](images/gpt-6-luna-layout-042.webp) | ![deepseek-v4.1-flash on layout 42](images/deepseek-v4.1-flash-layout-042.webp) | ![glm-5.3-flash on layout 42](images/glm-5.3-flash-layout-042.webp) | ![nemotron-3.5-super-vl on layout 42](images/nemotron-3.5-super-vl-layout-042.webp) |
+| 459 steps | 83 steps | 185 steps | 82 steps | 74 steps |
 
 The trials behind the table, with each run's actions, transcripts and model calls, are in the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval).
 
