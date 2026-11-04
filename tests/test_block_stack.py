@@ -228,6 +228,36 @@ def test_a_refused_step_holds_the_last_target(embodiment, scene):
     assert (embodiment._q == held).all()
 
 
+def test_joint_control_drives_the_joints_it_is_given(scene):
+    emb = SimEmbodiment(control="joints")
+    try:
+        assert emb.info.action_space.semantics.control_mode == "joint_pos"
+        emb.reset(scene)
+        target = emb._joints.copy()
+        target[0] += 0.05
+        for _ in range(5):
+            result = emb.step(Action(data=target))
+        assert not result.info["refused"]
+        assert np.allclose(result.observation.state["joint_pos"][:5], target[:5], atol=0.01)
+    finally:
+        emb.close()
+
+
+def test_joint_control_clips_to_the_joint_limits(scene):
+    emb = SimEmbodiment(control="joints")
+    try:
+        emb.reset(scene)
+        emb.step(Action(data=np.full(6, 10.0)))
+        assert (emb._q[0] == LIMITS[:, 1]).all()
+    finally:
+        emb.close()
+
+
+def test_control_must_be_grip_or_joints():
+    with pytest.raises(ValueError, match="control"):
+        SimEmbodiment(control="eef")
+
+
 @pytest.mark.parametrize("stop", [False, True])
 def test_an_until_done_trial_clears_the_arm_on_its_last_step(scene, stop):
     emb = SimEmbodiment(until_done=True)

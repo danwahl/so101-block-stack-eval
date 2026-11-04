@@ -5,6 +5,9 @@ jaws are; a closed-form IK turns that into joint targets. The commanded point is
 point: where a block's centre sits once the jaws close on it, so a grasp is a move to the
 block followed by a close, at any pitch.
 
+``control="joints"`` takes the six joint targets directly instead, in radians with the
+jaw last, which is what a VLA trained on the cell's demonstrations emits.
+
 The arm has five joints, so those five numbers fix it. Pitch is the IK's tilt, 0 level and
 pi/2 straight down; it tips the tool in the arm's own vertical plane, never sideways
 across it.
@@ -45,11 +48,13 @@ from .spec import (
     GRIPPER_CLOSED,
     GRIPPER_OPEN,
     IMAGE_SIZE,
+    JOINT_NAMES,
     LIMITS,
 )
 
 ENV_ID = "SO101BlockStack-v1"
 LABELS = ("x", "y", "z", "yaw", "pitch", "gripper")
+JOINT_LABELS = tuple(JOINT_NAMES)
 CONTROL_HZ = 10.0
 
 # The box the agent can name: the arm's whole reach above the table, every yaw, and pitch
@@ -69,6 +74,7 @@ CLEAR_QPOS = np.array([[0.0, 0.0, -np.pi / 2, 0.0, 0.0, GRIPPER_OPEN]])
 
 # The most any joint may move in one step, as on the hardware.
 MAX_JOINT_STEP = math.radians(10.0)
+JOINT_LOW, JOINT_HIGH = LIMITS[:, 0].astype(np.float64), LIMITS[:, 1].astype(np.float64)
 
 # The grip point from the TCP: just below it, so the jaw tips clear the table, and along the
 # jaw axis, seating the block against the fixed jaw.
@@ -241,10 +247,14 @@ LOCATE_POINTS = CustomTool(
 class SimEmbodiment(EmbodimentBase):
     """One ``SO101BlockStack-v1`` env, reset per scene to that scene's layout."""
 
-    def __init__(self, until_done: bool = False):
+    def __init__(self, until_done: bool = False, control: str = "grip"):
         """``until_done`` runs a trial on past a stack, until the policy stops it or the
-        task's last step, and clears the arm away on that step."""
+        task's last step, and clears the arm away on that step. ``control`` is "grip"
+        for the grip-point action or "joints" for joint targets."""
+        if control not in ("grip", "joints"):
+            raise ValueError(f'control must be "grip" or "joints", got {control!r}')
         self._until_done = until_done
+        self._joint_control = control == "joints"
         self._max_steps = None
         self._t = 0
         # One env steps faster on the CPU, where a joint write also lands without a flush.
@@ -258,9 +268,22 @@ class SimEmbodiment(EmbodimentBase):
                 StateField("joint_pos", (6,), "rad"),
             )
         )
-        self.info = EmbodimentInfo(
-            name="so101_sim",
-            action_space=Box(
+        if self._joint_control:
+            action_space = Box(
+                (6,),
+                JOINT_LOW,
+                JOINT_HIGH,
+                ActionSemantics(
+                    control_mode="joint_pos",
+                    rotation_repr="none",
+                    gripper="continuous",
+                    frame="base",
+                    dim_labels=JOINT_LABELS,
+                    max_step=(MAX_JOINT_STEP,) * 6,
+                ),
+            )
+        else:
+            action_space = Box(
                 (6,),
                 LOW,
                 HIGH,
@@ -272,7 +295,10 @@ class SimEmbodiment(EmbodimentBase):
                     dim_labels=LABELS,
                     max_step=MAX_STEP,
                 ),
-            ),
+            )
+        self.info = EmbodimentInfo(
+            name="so101_sim",
+            action_space=action_space,
             observation_space=ObservationSpace(
                 cameras=tuple(CameraSpec(name, IMAGE_SIZE, IMAGE_SIZE) for name in CAMERAS),
                 state=state,
@@ -311,13 +337,17 @@ class SimEmbodiment(EmbodimentBase):
         return self._observation(obs)
 
     def step(self, action: Action) -> StepResult:
-        target = np.clip(action.data, LOW, HIGH)[None]
-        refused = check_motion(target, self._joints) is not None
-        # A refused target holds the arm where it was last sent, so the agent's arrival
-        # check reports the shortfall. Measured from where the arm is, a move that meets a
-        # block stops pressing once its command leads the arm by the step limit.
-        if not refused:
-            self._q, _ = solve(target)
+        if self._joint_control:
+            refused = False
+            self._q = np.clip(action.data, JOINT_LOW, JOINT_HIGH)[None]
+        else:
+            target = np.clip(action.data, LOW, HIGH)[None]
+            refused = check_motion(target, self._joints) is not None
+            # A refused target holds the arm where it was last sent, so the agent's arrival
+            # check reports the shortfall. Measured from where the arm is, a move that meets
+            # a block stops pressing once its command leads the arm by the step limit.
+            if not refused:
+                self._q, _ = solve(target)
         command = torch.as_tensor(self._q, dtype=torch.float32, device=self._env.device)
         self._t += 1
         last = action.meta.get("request_stop") or self._t == self._max_steps
