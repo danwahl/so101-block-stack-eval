@@ -10,11 +10,15 @@ Anthropic's calls are priced from their tokens at PRICES. A trial counts as stac
 row, counts as neither stacked nor lifted. The 95% bootstrap intervals resample layouts.
 Every counted trial must have seen the same system prompt and tool schemas; their hash is
 the prompt version, written to results.json and the README with the leaderboard.
+
+A VLA's run counts the same way, listed under its checkpoint's Hugging Face repo, with no
+model calls to report.
 """
 
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 import pandas as pd
@@ -66,12 +70,24 @@ COLUMNS = [
 ]
 
 
+# What trial_usage reads off an agent's wire log, and a VLA has none of.
+USAGE = ("cost", "calls", "tokens_in", "tokens_out", "minutes")
+
+
 def model_id(config: dict) -> str:
     """The provider/model name a run was given, from its logged policy config: the agent
     plugin logs an Anthropic model without its provider."""
     if config["base_url"] == ANTHROPIC:
         return f"anthropic/{config['model']}"
     return config["model"]
+
+
+def name(spec: dict) -> str:
+    """The provider/name a run is listed under: a VLA's checkpoint repo, or the agent's
+    model."""
+    if spec["policy"] == "lerobot":
+        return spec["policy_checkpoint"].split("@")[0]
+    return model_id(spec["policy_config"])
 
 
 def latest_runs(root: Path):
@@ -84,13 +100,16 @@ def latest_runs(root: Path):
         spec, config = log["eval"], log["eval"]["policy_config"]
         if spec["task"] != TASK or log["status"] != "success":
             continue
-        if (config["base_url"], config["wire"]) not in ROUTES or config["effort"] != "low":
+        if spec["policy"] == "lerobot":
+            if spec["policy_checkpoint"] is None:
+                continue
+        elif (config["base_url"], config["wire"]) not in ROUTES or config["effort"] != "low":
             continue
         if sorted(s["scene_id"] for s in log["samples"]) != LAYOUTS:
             continue
         if any(len(s["trial_metadata"]) != 1 for s in log["samples"]):
             continue
-        model = model_id(config)
+        model = name(spec)
         if model not in runs or spec["created"] > runs[model][1]["eval"]["created"]:
             runs[model] = (path, log)
     return runs.values()
@@ -153,7 +172,7 @@ def call_usage(model: str, call: dict) -> tuple[float, int, int]:
 
 def trial_usage(directory: Path, trial: dict, model: str) -> dict[str, float]:
     """The trial's model calls, tokens, cost and model time, from its wire log."""
-    usage = {"cost": 0.0, "calls": 0, "tokens_in": 0, "tokens_out": 0, "minutes": 0.0}
+    usage = dict.fromkeys(USAGE, 0.0)
     if "wire_capture" not in trial:
         return usage
     with (directory / trial["wire_capture"]).open() as file:
@@ -172,7 +191,8 @@ def load_trials(root: Path) -> pd.DataFrame:
     """One row per trial of every counted run."""
     rows = []
     for path, log in latest_runs(root):
-        model = model_id(log["eval"]["policy_config"])
+        model = name(log["eval"])
+        vla = log["eval"]["policy"] == "lerobot"
         for sample in log["samples"]:
             for epoch, (scores, trial) in enumerate(
                 zip(sample["epochs"], sample["trial_metadata"], strict=True)
@@ -187,7 +207,11 @@ def load_trials(root: Path) -> pd.DataFrame:
                         "standing": scores.get("standing", 0.0),
                         "lifted": scores.get("lifted", 0.0),
                         "errored": float(not scores),
-                        **trial_usage(path.parent, trial, model.split("/")[-1]),
+                        **(
+                            dict.fromkeys(USAGE, math.nan)
+                            if vla
+                            else trial_usage(path.parent, trial, model.split("/")[-1])
+                        ),
                         "prompt": fingerprint(path.parent, trial),
                     }
                 )
