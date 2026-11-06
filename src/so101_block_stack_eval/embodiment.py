@@ -247,18 +247,22 @@ LOCATE_POINTS = CustomTool(
 class SimEmbodiment(EmbodimentBase):
     """One ``SO101BlockStack-v1`` env, reset per scene to that scene's layout."""
 
-    def __init__(self, until_done: bool = False, control: str = "grip"):
+    def __init__(
+        self, until_done: bool = False, control: str = "grip", sim_backend: str = "physx_cpu"
+    ):
         """``until_done`` runs a trial on past a stack, until the policy stops it or the
         task's last step, and clears the arm away on that step. ``control`` is "grip"
-        for the grip-point action or "joints" for joint targets."""
+        for the grip-point action or "joints" for joint targets. ``sim_backend`` is
+        ManiSkill's: one env steps fastest on the CPU, and "physx_cuda" gives the physics
+        a batched GPU eval has, at about eight times the time per trial. A process can run
+        only one: GPU PhysX will not start once the CPU's has."""
         if control not in ("grip", "joints"):
             raise ValueError(f'control must be "grip" or "joints", got {control!r}')
         self._until_done = until_done
         self._joint_control = control == "joints"
         self._max_steps = None
         self._t = 0
-        # One env steps faster on the CPU, where a joint write also lands without a flush.
-        self._env = gym.make(ENV_ID, num_envs=1, obs_mode="rgb", sim_backend="physx_cpu").unwrapped
+        self._env = gym.make(ENV_ID, num_envs=1, obs_mode="rgb", sim_backend=sim_backend).unwrapped
         self._q = None
         self._joints = None
         self._instruction = None
