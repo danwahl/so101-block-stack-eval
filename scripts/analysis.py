@@ -249,7 +249,14 @@ def main():
             f"{EPISODES} layouts, one trial each; 95% bootstrap interval over layouts. "
             "Cost in US dollars, calls, tokens and minutes waiting on the model are means "
             "per trial. "
-            f"Prompt version `{prompts[0]}`."
+            f"Prompt version `{prompts[0]}`.",
+            "The drwahl rows are VLAs: LoRA fine-tunes of pi0.5, pi0, LaWAM, VLA-JEPA and "
+            "SmolVLA on the cell's oracle demonstrations, trained in "
+            "[vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets "
+            "directly and executes 10 actions of each chunk before predicting the next "
+            "(VLA-JEPA 7, SmolVLA all 50), and pi0.5 stitches its chunks with Real-Time "
+            "Chunking. Physics runs on the CPU, which costs them a few layouts against the "
+            "GPU physics they were evaluated under in vla-test.",
         ],
     )
     board.add(
