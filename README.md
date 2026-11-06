@@ -8,15 +8,22 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 | # | Name | Provider | Stacked | Lifted | Cost | Calls | Tokens in | Tokens out | Minutes |
 |--:|:--|:--|--:|--:|--:|--:|--:|--:|--:|
-| 1 | claude-opus-5-5 | anthropic | **88% (78%–96%)** | **100%** | 0.237 | **18** | 136,590 | 2,876 | **1.0** |
-| 2 | claude-sonnet-5-5 | anthropic | 52% (40%–66%) | 92% | 0.234 | 29 | 336,394 | 5,743 | 1.6 |
-| 3 | claude-haiku-5-5 | anthropic | 34% (22%–48%) | 86% | 0.020 | 38 | 523,773 | 10,333 | 1.3 |
-| 4 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | 90% | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
-| 5 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
-| 6 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | 24 | **127,304** | **2,052** | 1.5 |
-| 7 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | 1.5 |
+| 1 | claude-opus-5-5 | anthropic | **88% (78%–96%)** | 100% | 0.237 | **18** | 136,590 | 2,876 | **1.0** |
+| 2 | pi05_so101_block_stack_sim | drwahl | 68% (56%–80%) | 100% |  |  |  |  |  |
+| 2 | pi0_so101_block_stack_sim | drwahl | 68% (56%–80%) | 96% |  |  |  |  |  |
+| 4 | lawam_so101_block_stack_sim | drwahl | 56% (42%–70%) | 86% |  |  |  |  |  |
+| 5 | claude-sonnet-5-5 | anthropic | 52% (40%–66%) | 92% | 0.234 | 29 | 336,394 | 5,743 | 1.6 |
+| 6 | vla_jepa_so101_block_stack_sim | drwahl | 46% (34%–58%) | 76% |  |  |  |  |  |
+| 7 | claude-haiku-5-5 | anthropic | 34% (22%–48%) | 86% | 0.020 | 38 | 523,773 | 10,333 | 1.3 |
+| 8 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | 90% | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
+| 9 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
+| 10 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | 24 | **127,304** | **2,052** | 1.5 |
+| 11 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | 1.5 |
+| 11 | smolvla_so101_block_stack_sim | drwahl | 0% (0%–0%) | 10% |  |  |  |  |  |
 
 50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.
+
+The drwahl rows are VLAs: LoRA fine-tunes of pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA on the cell's oracle demonstrations, trained in [vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets directly and executes 10 actions of each chunk before predicting the next (VLA-JEPA 7, SmolVLA all 50), and pi0.5 stitches its chunks with Real-Time Chunking. Physics runs on the CPU, which costs them a few layouts against the GPU physics they were evaluated under in vla-test.
 
 <!-- leaderboard:end -->
 
