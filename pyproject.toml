@@ -22,8 +22,8 @@ dependencies = [
 vla = ["inspect-robots-so101[lerobot]", "lerobot[smolvla,vla_jepa,lawam]"]
 
 [tool.uv]
-# The model stack the VLA checkpoints were scored with in vla-test, so a score moves only
-# with the harness. Inert unless the vla extra is installed.
+# The model stack the VLA checkpoints were trained with, so a score moves only with the
+# harness. Inert unless the vla extra is installed.
 constraint-dependencies = ["transformers==5.5.4", "peft==0.20.0", "accelerate==1.14.0"]
 
 [tool.uv.sources]
@@ -34,7 +34,7 @@ constraint-dependencies = ["transformers==5.5.4", "peft==0.20.0", "accelerate==1
 inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", branch = "agent-custom-tools" }
 # Loads LoRA checkpoints and their camera renaming; unreleased.
 inspect-robots-so101 = { git = "https://github.com/danwahl/inspect-robots-so101", branch = "vla-checkpoints" }
-# LaWAM landed after lerobot 0.6.1, so the VLAs pin vla-test's commit.
+# LaWAM landed after lerobot 0.6.1, so the VLAs pin the commit they were trained on.
 lerobot = { git = "https://github.com/huggingface/lerobot", rev = "f5c9bc02137c331b009eccd44ece6f11b62187a8" }
 evalib = { git = "https://github.com/danwahl/evalib", tag = "v0.2.2" }
 
