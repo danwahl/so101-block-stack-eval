@@ -672,8 +672,8 @@ dependencies = [
 
 [[package]]
 name = "inspect-robots-so101"
-version = "0.4.1.dev14+g9a013beab"
-source = { git = "https://github.com/danwahl/inspect-robots-so101?branch=vla-checkpoints#9a013beabefbc43bd360ac0d8fa823464a2bf98e" }
+version = "0.4.1.dev7+g3827c39ea"
+source = { git = "https://github.com/danwahl/inspect-robots-so101#3827c39eaea90657f7af40360be9fe7bcb250c58" }
 dependencies = [
     { name = "inspect-robots" },
     { name = "numpy" },
@@ -1754,7 +1754,7 @@ requires-dist = [
     { name = "gymnasium", specifier = ">=1.0,<2" },
     { name = "inspect-robots", specifier = ">=0.58" },
     { name = "inspect-robots-agent", git = "https://github.com/danwahl/inspect-robots?subdirectory=plugins%2Finspect-robots-agent&branch=agent-custom-tools" },
-    { name = "inspect-robots-so101", extras = ["lerobot"], marker = "extra == 'vla'", git = "https://github.com/danwahl/inspect-robots-so101?branch=vla-checkpoints" },
+    { name = "inspect-robots-so101", extras = ["lerobot"], marker = "extra == 'vla'", git = "https://github.com/danwahl/inspect-robots-so101" },
     { name = "lerobot", extras = ["smolvla", "vla-jepa", "lawam"], marker = "extra == 'vla'", git = "https://github.com/huggingface/lerobot?rev=f5c9bc02137c331b009eccd44ece6f11b62187a8" },
     { name = "mani-skill", specifier = "==3.0.1" },
     { name = "numpy", specifier = ">=2.0,<2.3" },
