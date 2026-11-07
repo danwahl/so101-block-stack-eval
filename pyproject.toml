@@ -32,8 +32,9 @@ constraint-dependencies = ["transformers==5.5.4", "peft==0.20.0", "accelerate==1
 # commit. That branch also supplies inspect-robots itself: the plugin names core as a
 # workspace source, so both track the fork's pre-release main.
 inspect-robots-agent = { git = "https://github.com/danwahl/inspect-robots", subdirectory = "plugins/inspect-robots-agent", branch = "agent-custom-tools" }
-# Loads LoRA checkpoints and their camera renaming; unreleased.
-inspect-robots-so101 = { git = "https://github.com/danwahl/inspect-robots-so101", branch = "vla-checkpoints" }
+# Loads LoRA checkpoints and their camera renaming, which are on the fork's main but
+# unreleased; uv.lock records the commit.
+inspect-robots-so101 = { git = "https://github.com/danwahl/inspect-robots-so101" }
 # LaWAM landed after lerobot 0.6.1, so the VLAs pin the commit they were trained on.
 lerobot = { git = "https://github.com/huggingface/lerobot", rev = "f5c9bc02137c331b009eccd44ece6f11b62187a8" }
 evalib = { git = "https://github.com/danwahl/evalib", tag = "v0.2.2" }
