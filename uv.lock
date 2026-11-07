@@ -672,8 +672,8 @@ dependencies = [
 
 [[package]]
 name = "inspect-robots-so101"
-version = "0.4.1.dev12+g31c219781"
-source = { git = "https://github.com/danwahl/inspect-robots-so101?branch=vla-checkpoints#31c2197819ad919cb861635934867b7ebd6f1d68" }
+version = "0.4.1.dev14+g9a013beab"
+source = { git = "https://github.com/danwahl/inspect-robots-so101?branch=vla-checkpoints#9a013beabefbc43bd360ac0d8fa823464a2bf98e" }
 dependencies = [
     { name = "inspect-robots" },
     { name = "numpy" },
