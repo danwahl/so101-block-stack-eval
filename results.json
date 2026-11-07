@@ -104,9 +104,9 @@
    "kind": "model",
    "scores": {
     "standing": {
-     "value": 0.68,
-     "lo": 0.56,
-     "hi": 0.8
+     "value": 0.82,
+     "lo": 0.7195000000000005,
+     "hi": 0.92
     },
     "lifted": {
      "value": 1.0,
@@ -123,13 +123,13 @@
    "kind": "model",
    "scores": {
     "standing": {
-     "value": 0.68,
-     "lo": 0.56,
-     "hi": 0.8
+     "value": 0.76,
+     "lo": 0.64,
+     "hi": 0.86
     },
     "lifted": {
-     "value": 0.96,
-     "lo": 0.9,
+     "value": 0.94,
+     "lo": 0.86,
      "hi": 1.0
     }
    },
@@ -142,14 +142,14 @@
    "kind": "model",
    "scores": {
     "standing": {
-     "value": 0.56,
-     "lo": 0.42,
-     "hi": 0.7
+     "value": 0.62,
+     "lo": 0.49950000000000044,
+     "hi": 0.74
     },
     "lifted": {
-     "value": 0.86,
-     "lo": 0.76,
-     "hi": 0.96
+     "value": 0.9,
+     "lo": 0.82,
+     "hi": 0.98
     }
    },
    "info": {
@@ -205,14 +205,14 @@
    "kind": "model",
    "scores": {
     "standing": {
-     "value": 0.46,
-     "lo": 0.34,
-     "hi": 0.5804999999999995
+     "value": 0.5,
+     "lo": 0.36,
+     "hi": 0.64
     },
     "lifted": {
-     "value": 0.76,
-     "lo": 0.62,
-     "hi": 0.88
+     "value": 0.86,
+     "lo": 0.74,
+     "hi": 0.9404999999999994
     }
    },
    "info": {
@@ -449,9 +449,9 @@
      "hi": 0.0
     },
     "lifted": {
-     "value": 0.1,
-     "lo": 0.02,
-     "hi": 0.2
+     "value": 0.16,
+     "lo": 0.06,
+     "hi": 0.26
     }
    },
    "info": {
@@ -461,7 +461,7 @@
  ],
  "notes": [
   "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.",
-  "The drwahl rows are VLAs: LoRA fine-tunes of pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA on the cell's oracle demonstrations, trained in [vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets directly and executes 10 actions of each chunk before predicting the next (VLA-JEPA 7, SmolVLA all 50), and pi0.5 stitches its chunks with Real-Time Chunking. Physics runs on the CPU, which costs them a few layouts against the GPU physics they were evaluated under in vla-test."
+  "The drwahl rows are VLAs: LoRA fine-tunes of pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA on the cell's oracle demonstrations, trained in [vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets directly and executes 10 actions of each chunk before predicting the next (VLA-JEPA 7, SmolVLA all 50), read back off a smooth cubic through 13 of its steps. pi0.5, pi0 and SmolVLA stitch their chunks with Real-Time Chunking. Physics runs on the CPU, which costs them a few layouts against the GPU physics they were evaluated under in vla-test."
  ],
- "updated": "2026-11-06"
+ "updated": "2026-11-07"
 }
