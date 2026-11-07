@@ -8,18 +8,15 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 
 | # | Name | Provider | Stacked | Lifted | Cost | Calls | Tokens in | Tokens out | Minutes |
 |--:|:--|:--|--:|--:|--:|--:|--:|--:|--:|
-| 1 | claude-opus-5-5 | anthropic | **88% (78%–96%)** | 100% | 0.237 | **18** | 136,590 | 2,876 | **1.0** |
-| 2 | pi0.5 | physical-intelligence | 82% (72%–92%) | 100% |  |  |  |  |  |
-| 3 | pi0 | physical-intelligence | 76% (64%–86%) | 94% |  |  |  |  |  |
-| 4 | lawam | rlinf | 62% (50%–74%) | 90% |  |  |  |  |  |
-| 5 | claude-sonnet-5-5 | anthropic | 52% (40%–66%) | 92% | 0.234 | 29 | 336,394 | 5,743 | 1.6 |
-| 6 | vla-jepa | ustc | 50% (36%–64%) | 86% |  |  |  |  |  |
-| 7 | claude-haiku-5-5 | anthropic | 34% (22%–48%) | 86% | 0.020 | 38 | 523,773 | 10,333 | 1.3 |
-| 8 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | 90% | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
-| 9 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
-| 10 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | 24 | **127,304** | **2,052** | 1.5 |
-| 11 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | 1.5 |
-| 11 | smolvla | huggingface | 0% (0%–0%) | 16% |  |  |  |  |  |
+| 1 | pi0.5 | pi | **82% (72%–92%)** | **100%** |  |  |  |  |  |
+| 2 | pi0 | pi | 76% (64%–86%) | 94% |  |  |  |  |  |
+| 3 | lawam | rlinf | 62% (50%–74%) | 90% |  |  |  |  |  |
+| 4 | vla-jepa | ustc | 50% (36%–64%) | 86% |  |  |  |  |  |
+| 5 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | 90% | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
+| 6 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
+| 7 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | **24** | **127,304** | **2,052** | 1.5 |
+| 8 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | **1.5** |
+| 8 | smolvla | huggingface | 0% (0%–0%) | 16% |  |  |  |  |  |
 
 50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.
 
@@ -29,16 +26,16 @@ The pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA rows are VLAs, each a LoRA fine-tune
 
 Each model on layout 42, "stack the red block on the green block", from the top camera:
 
-| claude-opus-5-5 | claude-sonnet-5-5 | claude-haiku-5-5 | gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash | nemotron-3.5-super-vl |
+| <img src="images/claude-opus-5-5-layout-042.webp" alt="claude-opus-5-5 on layout 42" width="100"> | <img src="images/claude-sonnet-5-5-layout-042.webp" alt="claude-sonnet-5-5 on layout 42" width="100"> | <img src="images/claude-haiku-5-5-layout-042.webp" alt="claude-haiku-5-5 on layout 42" width="100"> | <img src="images/gpt-6-luna-layout-042.webp" alt="gpt-6-luna on layout 42" width="100"> | <img src="images/deepseek-v4.1-flash-layout-042.webp" alt="deepseek-v4.1-flash on layout 42" width="100"> | <img src="images/glm-5.3-flash-layout-042.webp" alt="glm-5.3-flash on layout 42" width="100"> | <img src="images/nemotron-3.5-super-vl-layout-042.webp" alt="nemotron-3.5-super-vl on layout 42" width="100"> |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| ![claude-opus-5-5 on layout 42](images/claude-opus-5-5-layout-042.webp) | ![claude-sonnet-5-5 on layout 42](images/claude-sonnet-5-5-layout-042.webp) | ![claude-haiku-5-5 on layout 42](images/claude-haiku-5-5-layout-042.webp) | ![gpt-6-luna on layout 42](images/gpt-6-luna-layout-042.webp) | ![deepseek-v4.1-flash on layout 42](images/deepseek-v4.1-flash-layout-042.webp) | ![glm-5.3-flash on layout 42](images/glm-5.3-flash-layout-042.webp) | ![nemotron-3.5-super-vl on layout 42](images/nemotron-3.5-super-vl-layout-042.webp) |
+| claude-opus-5-5 | claude-sonnet-5-5 | claude-haiku-5-5 | gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash | nemotron-3.5-super-vl |
 | 83 steps | 81 steps | 459 steps | 83 steps | 185 steps | 82 steps | 74 steps |
 
 The VLAs on the same layout, over the first 200 of their 600 steps. A VLA never ends a trial itself; the four that stack this layout place the block well inside the first 200.
 
-| pi0.5 | pi0 | lawam | vla-jepa | smolvla |
+| <img src="images/pi0.5-layout-042.webp" alt="pi0.5 on layout 42" width="100"> | <img src="images/pi0-layout-042.webp" alt="pi0 on layout 42" width="100"> | <img src="images/lawam-layout-042.webp" alt="lawam on layout 42" width="100"> | <img src="images/vla-jepa-layout-042.webp" alt="vla-jepa on layout 42" width="100"> | <img src="images/smolvla-layout-042.webp" alt="smolvla on layout 42" width="100"> |
 |:-:|:-:|:-:|:-:|:-:|
-| ![pi0.5 on layout 42](images/pi0.5-layout-042.webp) | ![pi0 on layout 42](images/pi0-layout-042.webp) | ![lawam on layout 42](images/lawam-layout-042.webp) | ![vla-jepa on layout 42](images/vla-jepa-layout-042.webp) | ![smolvla on layout 42](images/smolvla-layout-042.webp) |
+| pi0.5 | pi0 | lawam | vla-jepa | smolvla |
 
 The trials behind the table, with each run's actions, transcripts and model calls, are in the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval).
 

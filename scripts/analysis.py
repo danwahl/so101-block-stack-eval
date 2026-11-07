@@ -85,8 +85,8 @@ def model_id(config: dict) -> str:
 # A VLA checkpoint repo: the provider/name it is listed under, crediting the base model's
 # developer.
 VLAS = {
-    "drwahl/pi05_so101_block_stack_sim": "physical-intelligence/pi0.5",
-    "drwahl/pi0_so101_block_stack_sim": "physical-intelligence/pi0",
+    "drwahl/pi05_so101_block_stack_sim": "pi/pi0.5",
+    "drwahl/pi0_so101_block_stack_sim": "pi/pi0",
     "drwahl/lawam_so101_block_stack_sim": "rlinf/lawam",
     "drwahl/vla_jepa_so101_block_stack_sim": "ustc/vla-jepa",
     "drwahl/smolvla_so101_block_stack_sim": "huggingface/smolvla",
