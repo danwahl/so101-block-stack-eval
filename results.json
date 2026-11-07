@@ -100,7 +100,7 @@
    }
   },
   {
-   "name": "pi05_so101_block_stack_sim",
+   "name": "pi0.5",
    "kind": "model",
    "scores": {
     "standing": {
@@ -115,11 +115,11 @@
     }
    },
    "info": {
-    "provider": "drwahl"
+    "provider": "physical-intelligence"
    }
   },
   {
-   "name": "pi0_so101_block_stack_sim",
+   "name": "pi0",
    "kind": "model",
    "scores": {
     "standing": {
@@ -134,11 +134,11 @@
     }
    },
    "info": {
-    "provider": "drwahl"
+    "provider": "physical-intelligence"
    }
   },
   {
-   "name": "lawam_so101_block_stack_sim",
+   "name": "lawam",
    "kind": "model",
    "scores": {
     "standing": {
@@ -153,7 +153,7 @@
     }
    },
    "info": {
-    "provider": "drwahl"
+    "provider": "rlinf"
    }
   },
   {
@@ -201,7 +201,7 @@
    }
   },
   {
-   "name": "vla_jepa_so101_block_stack_sim",
+   "name": "vla-jepa",
    "kind": "model",
    "scores": {
     "standing": {
@@ -216,7 +216,7 @@
     }
    },
    "info": {
-    "provider": "drwahl"
+    "provider": "ustc"
    }
   },
   {
@@ -440,7 +440,7 @@
    }
   },
   {
-   "name": "smolvla_so101_block_stack_sim",
+   "name": "smolvla",
    "kind": "model",
    "scores": {
     "standing": {
@@ -455,13 +455,13 @@
     }
    },
    "info": {
-    "provider": "drwahl"
+    "provider": "huggingface"
    }
   }
  ],
  "notes": [
   "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.",
-  "The drwahl rows are VLAs: LoRA fine-tunes of pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA on the cell's oracle demonstrations, trained in [vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets directly and executes 10 actions of each chunk before predicting the next (VLA-JEPA 7, SmolVLA all 50), read back off a smooth cubic through 13 of its steps. pi0.5, pi0 and SmolVLA stitch their chunks with Real-Time Chunking. Physics runs on the CPU, which costs them a few layouts against the GPU physics they were evaluated under in vla-test."
+  "The pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA rows are VLAs, each a LoRA fine-tune of the base model on the cell's [oracle demonstrations](https://huggingface.co/datasets/drwahl/so101_block_stack_sim): [pi0.5](https://huggingface.co/drwahl/pi05_so101_block_stack_sim), [pi0](https://huggingface.co/drwahl/pi0_so101_block_stack_sim), [LaWAM](https://huggingface.co/drwahl/lawam_so101_block_stack_sim), [VLA-JEPA](https://huggingface.co/drwahl/vla_jepa_so101_block_stack_sim), [SmolVLA](https://huggingface.co/drwahl/smolvla_so101_block_stack_sim). Each commands the joint targets directly and executes 10 actions of each chunk before predicting the next (VLA-JEPA 7, SmolVLA all 50), read back off a smooth cubic through 13 of its steps. pi0.5, pi0 and SmolVLA stitch their chunks with Real-Time Chunking."
  ],
  "updated": "2026-11-07"
 }

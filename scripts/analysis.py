@@ -82,11 +82,22 @@ def model_id(config: dict) -> str:
     return config["model"]
 
 
+# A VLA checkpoint repo: the provider/name it is listed under, crediting the base model's
+# developer.
+VLAS = {
+    "drwahl/pi05_so101_block_stack_sim": "physical-intelligence/pi0.5",
+    "drwahl/pi0_so101_block_stack_sim": "physical-intelligence/pi0",
+    "drwahl/lawam_so101_block_stack_sim": "rlinf/lawam",
+    "drwahl/vla_jepa_so101_block_stack_sim": "ustc/vla-jepa",
+    "drwahl/smolvla_so101_block_stack_sim": "huggingface/smolvla",
+}
+
+
 def name(spec: dict) -> str:
-    """The provider/name a run is listed under: a VLA's checkpoint repo, or the agent's
-    model."""
+    """The provider/name a run is listed under: a VLA's base model and its developer, or
+    the agent's model."""
     if spec["policy"] == "lerobot":
-        return spec["policy_checkpoint"].split("@")[0]
+        return VLAS[spec["policy_checkpoint"].split("@")[0]]
     return model_id(spec["policy_config"])
 
 
@@ -250,14 +261,19 @@ def main():
             "Cost in US dollars, calls, tokens and minutes waiting on the model are means "
             "per trial. "
             f"Prompt version `{prompts[0]}`.",
-            "The drwahl rows are VLAs: LoRA fine-tunes of pi0.5, pi0, LaWAM, VLA-JEPA and "
-            "SmolVLA on the cell's oracle demonstrations, trained in "
-            "[vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets "
-            "directly and executes 10 actions of each chunk before predicting the next "
-            "(VLA-JEPA 7, SmolVLA all 50), read back off a smooth cubic through 13 of its "
-            "steps. pi0.5, pi0 and SmolVLA stitch their chunks with Real-Time Chunking. "
-            "Physics runs on the CPU, which costs them a few layouts against the GPU physics "
-            "they were evaluated under in vla-test.",
+            "The pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA rows are VLAs, each a LoRA "
+            "fine-tune of the base model on the cell's "
+            "[oracle demonstrations]"
+            "(https://huggingface.co/datasets/drwahl/so101_block_stack_sim): "
+            "[pi0.5](https://huggingface.co/drwahl/pi05_so101_block_stack_sim), "
+            "[pi0](https://huggingface.co/drwahl/pi0_so101_block_stack_sim), "
+            "[LaWAM](https://huggingface.co/drwahl/lawam_so101_block_stack_sim), "
+            "[VLA-JEPA](https://huggingface.co/drwahl/vla_jepa_so101_block_stack_sim), "
+            "[SmolVLA](https://huggingface.co/drwahl/smolvla_so101_block_stack_sim). "
+            "Each commands the joint targets directly and executes 10 actions of each chunk "
+            "before predicting the next (VLA-JEPA 7, SmolVLA all 50), read back off a smooth "
+            "cubic through 13 of its steps. pi0.5, pi0 and SmolVLA stitch their chunks with "
+            "Real-Time Chunking.",
         ],
     )
     board.add(

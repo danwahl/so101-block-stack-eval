@@ -3,18 +3,16 @@
     python scripts/run_vla.py pi05
 
 Each policy is a LoRA adapter fine-tuned on the cell's oracle demonstrations
-(drwahl/so101_block_stack_sim) by vla-test, published as
-drwahl/<name>_so101_block_stack_sim and pinned here to the revision scored. It commands the
-six joint targets directly and executes the number of actions of each chunk it scores best
-at in vla-test before predicting the next. Each chunk is read back off a smooth cubic
-through 13 of its steps, and a policy that supports Real-Time Chunking (pi0, pi0.5,
-SmolVLA) stitches each chunk onto the unexecuted tail of the one before; ``--no-smooth``
-and ``--no-rtc`` turn these off. A VLA never ends a trial itself, so every trial runs to
-the task's last step.
+(drwahl/so101_block_stack_sim), published as drwahl/<name>_so101_block_stack_sim and
+pinned here to the revision scored. It commands the six joint targets directly and executes
+the number of actions of each chunk it scores best at before predicting the next. Each
+chunk is read back off a smooth cubic through 13 of its steps, and a policy that supports
+Real-Time Chunking (pi0, pi0.5, SmolVLA) stitches each chunk onto the unexecuted tail of
+the one before; ``--no-smooth`` and ``--no-rtc`` turn these off. A VLA never ends a trial
+itself, so every trial runs to the task's last step.
 
-Needs the vla extra (`uv sync --extra vla`) and a GPU. Physics runs on the CPU, which costs
-these policies a few layouts against vla-test's GPU physics; `--sim-backend physx_cuda`
-matches it at about eight times the time.
+Needs the vla extra (`uv sync --extra vla`) and a GPU. Physics runs on the CPU;
+`--sim-backend physx_cuda` runs it on the GPU, at about eight times the time.
 
 Logs go to outputs/drwahl/<name>_so101_block_stack_sim/, and the leaderboard counts the
 until-done task over the first 50 layouts, the default, as it does an agent's.
