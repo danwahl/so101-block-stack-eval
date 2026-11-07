@@ -254,9 +254,10 @@ def main():
             "SmolVLA on the cell's oracle demonstrations, trained in "
             "[vla-test](https://github.com/danwahl/vla-test). Each commands the joint targets "
             "directly and executes 10 actions of each chunk before predicting the next "
-            "(VLA-JEPA 7, SmolVLA all 50), and pi0.5 stitches its chunks with Real-Time "
-            "Chunking. Physics runs on the CPU, which costs them a few layouts against the "
-            "GPU physics they were evaluated under in vla-test.",
+            "(VLA-JEPA 7, SmolVLA all 50), read back off a smooth cubic through 13 of its "
+            "steps. pi0.5, pi0 and SmolVLA stitch their chunks with Real-Time Chunking. "
+            "Physics runs on the CPU, which costs them a few layouts against the GPU physics "
+            "they were evaluated under in vla-test.",
         ],
     )
     board.add(
