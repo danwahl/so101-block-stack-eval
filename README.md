@@ -34,6 +34,12 @@ Each model on layout 42, "stack the red block on the green block", from the top 
 | ![claude-opus-5-5 on layout 42](images/claude-opus-5-5-layout-042.webp) | ![claude-sonnet-5-5 on layout 42](images/claude-sonnet-5-5-layout-042.webp) | ![claude-haiku-5-5 on layout 42](images/claude-haiku-5-5-layout-042.webp) | ![gpt-6-luna on layout 42](images/gpt-6-luna-layout-042.webp) | ![deepseek-v4.1-flash on layout 42](images/deepseek-v4.1-flash-layout-042.webp) | ![glm-5.3-flash on layout 42](images/glm-5.3-flash-layout-042.webp) | ![nemotron-3.5-super-vl on layout 42](images/nemotron-3.5-super-vl-layout-042.webp) |
 | 83 steps | 81 steps | 459 steps | 83 steps | 185 steps | 82 steps | 74 steps |
 
+The VLAs on the same layout, over the first 200 of their 600 steps. A VLA never ends a trial itself; the four that stack this layout place the block well inside the first 200.
+
+| pi0.5 | pi0 | lawam | vla-jepa | smolvla |
+|:-:|:-:|:-:|:-:|:-:|
+| ![pi0.5 on layout 42](images/pi0.5-layout-042.webp) | ![pi0 on layout 42](images/pi0-layout-042.webp) | ![lawam on layout 42](images/lawam-layout-042.webp) | ![vla-jepa on layout 42](images/vla-jepa-layout-042.webp) | ![smolvla on layout 42](images/smolvla-layout-042.webp) |
+
 The trials behind the table, with each run's actions, transcripts and model calls, are in the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval).
 
 ## Task

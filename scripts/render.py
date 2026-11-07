@@ -3,8 +3,9 @@
     python scripts/render.py outputs/openai/gpt-6-luna/*-until-done_*.json layout-000
 
 The sim is deterministic, so a log's actions reproduce the trial without storing frames.
-An until-done trial is shown up to the agent's last action, without the arm cleared away.
-Each frame is the top camera, at half size, one per step.
+An until-done trial is shown up to the agent's last action, without the arm cleared away;
+``--steps`` cuts it shorter, for a VLA, which never ends a trial itself and so always runs
+to the task's last step. Each frame is the top camera, at half size, one per step.
 """
 
 import argparse
@@ -12,6 +13,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from analysis import name
 from inspect_robots.scene import Scene
 from inspect_robots.types import Action
 from PIL import Image
@@ -23,18 +25,17 @@ FRAME_MS = 100
 HOLD_MS = 1500
 
 
-def frames(embodiment, sample, actions_path):
-    """The top camera at the start and after each logged action."""
+def frames(embodiment, sample, actions_path, steps=None):
+    """The top camera at the start and after each logged action, up to ``steps`` of them."""
     scene = Scene(
         id=sample["scene_id"], instruction=sample["instruction"], metadata=sample["scene_metadata"]
     )
     yield embodiment.reset(scene).images["top"]
     with actions_path.open() as file:
-        for line in file:
-            record = json.loads(line)
-            if "action" in record:
-                action = Action(data=np.asarray(record["action"], np.float64))
-                yield embodiment.step(action).observation.images["top"]
+        records = (json.loads(line) for line in file)
+        actions = [record["action"] for record in records if "action" in record]
+    for action in actions[:steps]:
+        yield embodiment.step(Action(data=np.asarray(action, np.float64))).observation.images["top"]
 
 
 def main():
@@ -42,20 +43,23 @@ def main():
     parser.add_argument("log", type=Path, help="an Inspect Robots eval log")
     parser.add_argument("scene", help="scene id, such as layout-000")
     parser.add_argument("--epoch", type=int, default=0)
+    parser.add_argument("--steps", type=int, help="show only the first N steps")
     parser.add_argument("--out", type=Path, help="defaults to images/<model>-<scene>.webp")
     args = parser.parse_args()
 
     log = json.loads(args.log.read_text())
     sample = next(s for s in log["samples"] if s["scene_id"] == args.scene)
     actions = args.log.parent / sample["trial_metadata"][args.epoch]["actions"]
-    model = log["eval"]["policy_config"]["model"].split("/")[-1]
+    model = name(log["eval"]).split("/")[-1]
     out = args.out or Path("images") / f"{model}-{args.scene}.webp"
 
-    embodiment = SimEmbodiment()
+    # A VLA commands joint targets; an agent, the grip point.
+    control = "joints" if log["eval"]["policy"] == "lerobot" else "grip"
+    embodiment = SimEmbodiment(control=control)
     try:
         images = [
             Image.fromarray(np.asarray(image)).resize((SIZE, SIZE), Image.LANCZOS)
-            for image in frames(embodiment, sample, actions)
+            for image in frames(embodiment, sample, actions, args.steps)
         ]
     finally:
         embodiment.close()
