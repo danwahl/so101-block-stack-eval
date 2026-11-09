@@ -3,9 +3,10 @@
     python scripts/render.py outputs/openai/gpt-6-luna/*-until-done_*.json layout-000
 
 The sim is deterministic, so a log's actions reproduce the trial without storing frames.
-An until-done trial is shown up to the agent's last action, without the arm cleared away;
-``--steps`` cuts it shorter, for a VLA, which never ends a trial itself and so always runs
-to the task's last step. Each frame is the top camera, at half size, one per step.
+An agent's trial is shown up to its last action, without the arm cleared away. A VLA never
+ends a trial itself, so its trial is shown up to the first step the block sits stacked out
+of the jaws, or to the last if it never does. Each frame is the top camera, at half size,
+one per step.
 """
 
 import argparse
@@ -25,8 +26,9 @@ FRAME_MS = 100
 HOLD_MS = 1500
 
 
-def frames(embodiment, sample, actions_path, steps=None):
-    """The top camera at the start and after each logged action, up to ``steps`` of them."""
+def frames(embodiment, sample, actions_path, until_success):
+    """The top camera at the start and after each logged action, stopping at the first
+    success if ``until_success``."""
     scene = Scene(
         id=sample["scene_id"], instruction=sample["instruction"], metadata=sample["scene_metadata"]
     )
@@ -34,8 +36,11 @@ def frames(embodiment, sample, actions_path, steps=None):
     with actions_path.open() as file:
         records = (json.loads(line) for line in file)
         actions = [record["action"] for record in records if "action" in record]
-    for action in actions[:steps]:
-        yield embodiment.step(Action(data=np.asarray(action, np.float64))).observation.images["top"]
+    for action in actions:
+        result = embodiment.step(Action(data=np.asarray(action, np.float64)))
+        yield result.observation.images["top"]
+        if until_success and result.terminated:
+            return
 
 
 def main():
@@ -43,7 +48,6 @@ def main():
     parser.add_argument("log", type=Path, help="an Inspect Robots eval log")
     parser.add_argument("scene", help="scene id, such as layout-000")
     parser.add_argument("--epoch", type=int, default=0)
-    parser.add_argument("--steps", type=int, help="show only the first N steps")
     parser.add_argument("--out", type=Path, help="defaults to images/<model>-<scene>.webp")
     args = parser.parse_args()
 
@@ -54,12 +58,13 @@ def main():
     out = args.out or Path("images") / f"{model}-{args.scene}.webp"
 
     # A VLA commands joint targets; an agent, the grip point.
-    control = "joints" if log["eval"]["policy"] == "lerobot" else "grip"
+    vla = log["eval"]["policy"] == "lerobot"
+    control = "joints" if vla else "grip"
     embodiment = SimEmbodiment(control=control)
     try:
         images = [
             Image.fromarray(np.asarray(image)).resize((SIZE, SIZE), Image.LANCZOS)
-            for image in frames(embodiment, sample, actions, args.steps)
+            for image in frames(embodiment, sample, actions, until_success=vla)
         ]
     finally:
         embodiment.close()
@@ -72,7 +77,7 @@ def main():
         loop=0,
         quality=70,
     )
-    print(f"Wrote {out} ({len(images)} frames, {out.stat().st_size / 1e3:.0f} kB)")
+    print(f"Wrote {out} ({len(images) - 1} steps, {out.stat().st_size / 1e3:.0f} kB)")
 
 
 if __name__ == "__main__":

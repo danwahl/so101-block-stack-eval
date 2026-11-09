@@ -27,18 +27,15 @@ The pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA rows are VLAs, each a LoRA fine-tune
 
 <!-- leaderboard:end -->
 
-Each model on layout 42, "stack the red block on the green block", from the top camera:
+Each model on layout 42, "stack the red block on the green block", from the top camera, in leaderboard order. An agent's trial ends when it stops; a VLA's is shown up to the step it stacks the block, or all 600 if it never does.
 
-| <img src="images/claude-opus-5-5-layout-042.webp" alt="claude-opus-5-5 on layout 42" width="100"> | <img src="images/claude-sonnet-5-5-layout-042.webp" alt="claude-sonnet-5-5 on layout 42" width="100"> | <img src="images/claude-haiku-5-5-layout-042.webp" alt="claude-haiku-5-5 on layout 42" width="100"> | <img src="images/gpt-6-luna-layout-042.webp" alt="gpt-6-luna on layout 42" width="100"> | <img src="images/deepseek-v4.1-flash-layout-042.webp" alt="deepseek-v4.1-flash on layout 42" width="100"> | <img src="images/glm-5.3-flash-layout-042.webp" alt="glm-5.3-flash on layout 42" width="100"> | <img src="images/nemotron-3.5-super-vl-layout-042.webp" alt="nemotron-3.5-super-vl on layout 42" width="100"> |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| claude-opus-5-5 | claude-sonnet-5-5 | claude-haiku-5-5 | gpt-6-luna | deepseek-v4.1-flash | glm-5.3-flash | nemotron-3.5-super-vl |
-| 83 steps | 81 steps | 459 steps | 83 steps | 185 steps | 82 steps | 74 steps |
-
-The VLAs on the same layout, over the first 200 of their 600 steps. A VLA never ends a trial itself; the four that stack this layout place the block well inside the first 200.
-
-| <img src="images/pi0.5-layout-042.webp" alt="pi0.5 on layout 42" width="100"> | <img src="images/pi0-layout-042.webp" alt="pi0 on layout 42" width="100"> | <img src="images/lawam-layout-042.webp" alt="lawam on layout 42" width="100"> | <img src="images/vla-jepa-layout-042.webp" alt="vla-jepa on layout 42" width="100"> | <img src="images/smolvla-layout-042.webp" alt="smolvla on layout 42" width="100"> |
-|:-:|:-:|:-:|:-:|:-:|
-| pi0.5 | pi0 | lawam | vla-jepa | smolvla |
+| <img src="images/claude-opus-5-5-layout-042.webp" alt="claude-opus-5-5 on layout 42" width="140"> | <img src="images/pi0.5-layout-042.webp" alt="pi0.5 on layout 42" width="140"> | <img src="images/pi0-layout-042.webp" alt="pi0 on layout 42" width="140"> | <img src="images/lawam-layout-042.webp" alt="lawam on layout 42" width="140"> | <img src="images/claude-sonnet-5-5-layout-042.webp" alt="claude-sonnet-5-5 on layout 42" width="140"> | <img src="images/vla-jepa-layout-042.webp" alt="vla-jepa on layout 42" width="140"> |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| claude-opus-5-5 | pi0.5 | pi0 | lawam | claude-sonnet-5-5 | vla-jepa |
+| 83 steps | 110 steps | 102 steps | 106 steps | 81 steps | 142 steps |
+| <img src="images/claude-haiku-5-5-layout-042.webp" alt="claude-haiku-5-5 on layout 42" width="140"> | <img src="images/deepseek-v4.1-flash-layout-042.webp" alt="deepseek-v4.1-flash on layout 42" width="140"> | <img src="images/glm-5.3-flash-layout-042.webp" alt="glm-5.3-flash on layout 42" width="140"> | <img src="images/gpt-6-luna-layout-042.webp" alt="gpt-6-luna on layout 42" width="140"> | <img src="images/nemotron-3.5-super-vl-layout-042.webp" alt="nemotron-3.5-super-vl on layout 42" width="140"> | <img src="images/smolvla-layout-042.webp" alt="smolvla on layout 42" width="140"> |
+| claude-haiku-5-5 | deepseek-v4.1-flash | glm-5.3-flash | gpt-6-luna | nemotron-3.5-super-vl | smolvla |
+| 459 steps | 185 steps | 82 steps | 83 steps | 74 steps | 600 steps |
 
 The trials behind the table, with each run's actions, transcripts and model calls, are in the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval).
 
