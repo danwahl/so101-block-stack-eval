@@ -75,7 +75,10 @@ def main():
         append_images=images[1:],
         duration=[FRAME_MS] * (len(images) - 1) + [HOLD_MS],
         loop=0,
-        quality=70,
+        # Lower quality holds back a soft change, such as a moving shadow, until enough of
+        # it builds up; at 90 the shadow moves on every frame.
+        quality=90,
+        method=6,
     )
     print(f"Wrote {out} ({len(images) - 1} steps, {out.stat().st_size / 1e3:.0f} kB)")
 
