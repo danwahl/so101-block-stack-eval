@@ -220,6 +220,50 @@
    }
   },
   {
+   "name": "claude-fable-5-1",
+   "kind": "model",
+   "scores": {
+    "standing": {
+     "value": 0.48,
+     "lo": 0.36,
+     "hi": 0.62
+    },
+    "lifted": {
+     "value": 1.0,
+     "lo": 1.0,
+     "hi": 1.0
+    },
+    "cost": {
+     "value": 2.02380272,
+     "lo": 1.5927598409999997,
+     "hi": 2.4938118283749997
+    },
+    "calls": {
+     "value": 43.18,
+     "lo": 35.917,
+     "hi": 50.8605
+    },
+    "tokens_in": {
+     "value": 720812.82,
+     "lo": 506628.7655,
+     "hi": 959457.1274999998
+    },
+    "tokens_out": {
+     "value": 12602.38,
+     "lo": 9781.949500000002,
+     "hi": 15779.092999999999
+    },
+    "minutes": {
+     "value": 3.577511527379353,
+     "lo": 2.7678172470986846,
+     "hi": 4.505932100341717
+    }
+   },
+   "info": {
+    "provider": "anthropic"
+   }
+  },
+  {
    "name": "claude-haiku-5-5",
    "kind": "model",
    "scores": {
@@ -463,5 +507,5 @@
   "50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.",
   "The pi0.5, pi0, LaWAM, VLA-JEPA and SmolVLA rows are VLAs, each a LoRA fine-tune of the base model on the cell's [oracle demonstrations](https://huggingface.co/datasets/drwahl/so101_block_stack_sim): [pi0.5](https://huggingface.co/drwahl/pi05_so101_block_stack_sim), [pi0](https://huggingface.co/drwahl/pi0_so101_block_stack_sim), [LaWAM](https://huggingface.co/drwahl/lawam_so101_block_stack_sim), [VLA-JEPA](https://huggingface.co/drwahl/vla_jepa_so101_block_stack_sim), [SmolVLA](https://huggingface.co/drwahl/smolvla_so101_block_stack_sim). Each commands the joint targets directly and executes 10 actions of each chunk before predicting the next (VLA-JEPA 7, SmolVLA all 50), read back off a smooth cubic through 13 of its steps. pi0.5, pi0 and SmolVLA stitch their chunks with Real-Time Chunking."
  ],
- "updated": "2026-11-07"
+ "updated": "2026-11-12"
 }

@@ -14,12 +14,13 @@ The SO-101 block stack in ManiSkill, as an [Inspect Robots](https://github.com/r
 | 4 | lawam | rlinf | 62% (50%–74%) | 90% |  |  |  |  |  |
 | 5 | claude-sonnet-5-5 | anthropic | 52% (40%–66%) | 92% | 0.234 | 29 | 336,394 | 5,743 | 1.6 |
 | 6 | vla-jepa | ustc | 50% (36%–64%) | 86% |  |  |  |  |  |
-| 7 | claude-haiku-5-5 | anthropic | 34% (22%–48%) | 86% | 0.020 | 38 | 523,773 | 10,333 | 1.3 |
-| 8 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | 90% | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
-| 9 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
-| 10 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | 24 | **127,304** | **2,052** | 1.5 |
-| 11 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | 1.5 |
-| 11 | smolvla | huggingface | 0% (0%–0%) | 16% |  |  |  |  |  |
+| 7 | claude-fable-5-1 | anthropic | 48% (36%–62%) | 100% | 2.024 | 43 | 720,813 | 12,602 | 3.6 |
+| 8 | claude-haiku-5-5 | anthropic | 34% (22%–48%) | 86% | 0.020 | 38 | 523,773 | 10,333 | 1.3 |
+| 9 | deepseek-v4.1-flash | deepseek | 30% (18%–42%) | 90% | 0.082 | 62 | 723,514 | 76,012 | 8.2 |
+| 10 | glm-5.3-flash | z-ai | 24% (12%–36%) | 70% | 0.039 | 50 | 475,919 | 7,002 | 2.1 |
+| 11 | gpt-6-luna | openai | 16% (6%–26%) | 34% | **0.011** | 24 | **127,304** | **2,052** | 1.5 |
+| 12 | nemotron-3.5-super-vl | nvidia | 0% (0%–0%) | 12% | 0.055 | 52 | 636,514 | 17,841 | 1.5 |
+| 12 | smolvla | huggingface | 0% (0%–0%) | 16% |  |  |  |  |  |
 
 50 layouts, one trial each; 95% bootstrap interval over layouts. Cost in US dollars, calls, tokens and minutes waiting on the model are means per trial. Prompt version `8dd3b142780d`.
 
@@ -33,9 +34,12 @@ Each model on layout 42, "stack the red block on the green block", from the top 
 |:-:|:-:|:-:|:-:|:-:|:-:|
 | claude-opus-5-5 | pi0.5 | pi0 | lawam | claude-sonnet-5-5 | vla-jepa |
 | 83 steps | 110 steps | 102 steps | 106 steps | 81 steps | 142 steps |
-| <img src="images/claude-haiku-5-5-layout-042.webp" alt="claude-haiku-5-5 on layout 42" width="140"> | <img src="images/deepseek-v4.1-flash-layout-042.webp" alt="deepseek-v4.1-flash on layout 42" width="140"> | <img src="images/glm-5.3-flash-layout-042.webp" alt="glm-5.3-flash on layout 42" width="140"> | <img src="images/gpt-6-luna-layout-042.webp" alt="gpt-6-luna on layout 42" width="140"> | <img src="images/nemotron-3.5-super-vl-layout-042.webp" alt="nemotron-3.5-super-vl on layout 42" width="140"> | <img src="images/smolvla-layout-042.webp" alt="smolvla on layout 42" width="140"> |
-| claude-haiku-5-5 | deepseek-v4.1-flash | glm-5.3-flash | gpt-6-luna | nemotron-3.5-super-vl | smolvla |
-| 459 steps | 185 steps | 82 steps | 83 steps | 74 steps | 600 steps |
+| <img src="images/claude-fable-5-1-layout-042.webp" alt="claude-fable-5-1 on layout 42" width="140"> | <img src="images/claude-haiku-5-5-layout-042.webp" alt="claude-haiku-5-5 on layout 42" width="140"> | <img src="images/deepseek-v4.1-flash-layout-042.webp" alt="deepseek-v4.1-flash on layout 42" width="140"> | <img src="images/glm-5.3-flash-layout-042.webp" alt="glm-5.3-flash on layout 42" width="140"> | <img src="images/gpt-6-luna-layout-042.webp" alt="gpt-6-luna on layout 42" width="140"> | <img src="images/nemotron-3.5-super-vl-layout-042.webp" alt="nemotron-3.5-super-vl on layout 42" width="140"> |
+| claude-fable-5-1 | claude-haiku-5-5 | deepseek-v4.1-flash | glm-5.3-flash | gpt-6-luna | nemotron-3.5-super-vl |
+| 95 steps | 459 steps | 185 steps | 82 steps | 83 steps | 74 steps |
+| <img src="images/smolvla-layout-042.webp" alt="smolvla on layout 42" width="140"> |  |  |  |  |  |
+| smolvla |  |  |  |  |  |
+| 600 steps |  |  |  |  |  |
 
 The trials behind the table, with each run's actions, transcripts and model calls, are in the [Hugging Face dataset](https://huggingface.co/datasets/drwahl/so101-block-stack-eval).
 
